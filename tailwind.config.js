@@ -17,6 +17,7 @@ export default {
       },
       fontFamily: {
         'main': ['"Rubik Bubbles"', 'serif'],
+        'game': ['"Press Start 2P"','serif'],
       },
     },
   },
