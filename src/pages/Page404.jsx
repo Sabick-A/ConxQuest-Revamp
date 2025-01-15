@@ -1,29 +1,62 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Home/Navbar";
 import Image from "../assets/images/common/page404.webp";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+
+const BackgroundContainer = styled.div`
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    padding-top: 16rem;
+    background-image: url(${props => props.image});
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: ${props => props.loaded ? 1 : 0};
+    transition: opacity 0.5s ease-in-out;
+    position: relative;
+`;
 
 function Page404() {
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const loadImage = async () => {
+            try {
+                await new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.src = Image;
+                    img.onload = resolve;
+                    img.onerror = reject;
+                });
+                setImageLoaded(true);
+            } catch (error) {
+                console.error('Error loading image:', error);
+                // Still show the content even if image loading fails
+                setImageLoaded(true);
+            }
+        };
+
+        loadImage();
+    }, []);
+
     return (
         <>
             <Navbar />
-            <div
-                className="min-h-screen w-full flex justify-center items-start pt-64 relative"
-                style={{
-                    backgroundImage: `url(${Image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                }}
-            >
+            <BackgroundContainer image={Image} loaded={imageLoaded}>
                 {/* Text Container */}
-                <div className="w-1/2 mx-auto animate-bounce bg-white bg-opacity-70 text-black  shadow-xl shadow-slate-900 rounded-lg  px-10 py-12 text-center max-w-max ">
+                <div className={`w-1/2 mx-auto animate-bounce bg-white bg-opacity-70 text-black shadow-xl shadow-slate-900 rounded-lg px-10 py-12 text-center max-w-max transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
                     <p className="font-bold text-sm mb-4 font-game">
                         "It seems you've stumbled upon a lost island... Don't
                         worry, your way back home is just a click away!"
                     </p>
                     {/* Back to Home Button */}
-
                     <button
+                        onClick={() => navigate('/')}
                         style={{
                             WebkitBoxReflect:
                                 "below 0px linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.4))",
@@ -94,7 +127,7 @@ function Page404() {
                         </svg>
                     </button>
                 </div>
-            </div>
+            </BackgroundContainer>
         </>
     );
 }
