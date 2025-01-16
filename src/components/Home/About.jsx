@@ -42,7 +42,7 @@ function About() {
     useScrollAnimation();
 
     return (
-        <AboutSection id="about">
+        <AboutSection id='about'>
             <div className='w-9/12 text-center relative z-10 space-y-12'>
                 <div className='animate-on-scroll'>
                     <Title className='text-white text-6xl font-bold font-main'>

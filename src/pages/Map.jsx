@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     initSprites,
     initiVectors,
@@ -8,11 +9,14 @@ import {
 import Loader from "../components/Map/Loader/Loader";
 import XBtn from "../components/Map/XBtn";
 import HomeBtn from '../components/Map/HomeBtn'
+import StartInfo from "../components/Map/StartInfo";
 
 function Canvas() {
     const [loading, setLoading] = useState(true);
     const [xButton, setXButton] = useState(false);
+    const [showStartInfo,setShowStartInfo]=useState(true);
     const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
+    const navigate = useNavigate();
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
     const lastKey = useRef("");
@@ -31,6 +35,9 @@ function Canvas() {
         if (keys.current[key] !== undefined) {
             keys.current[key].pressed = isPressed;
             if (isPressed && key !== "x") lastKey.current = key;
+        }
+        if(isPressed && key==="h"){
+            navigate("/");
         }
     }, []);
 
@@ -112,10 +119,23 @@ function Canvas() {
         };
     }, [handleKeyDown, handleKeyUp]);
 
+    useEffect(() => {
+        const handleKeyPress = () => {
+            setShowStartInfo(false);
+        };
+
+        window.addEventListener("keydown", handleKeyPress);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyPress);
+        };
+    }, []);
+
     return (
         <>
             {loading && <Loader />}
-            <HomeBtn/>
+            {!loading && showStartInfo && <StartInfo/>}
+            {!loading && <HomeBtn/>}
             <canvas ref={canvasRef}></canvas>
             {xButton && <XBtn position={playerPosition} />}
         </>

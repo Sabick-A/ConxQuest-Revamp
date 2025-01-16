@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import logo2 from "../../assets/images/common/logo2.png";
 import { Link, useLocation } from "react-router-dom";
+import {Link as ScrollLink} from 'react-scroll'
+import { useNavigate } from "react-router-dom";
+import Alert from "../common/Alert";
 
 const NavLink = ({ to, children }) => {
     const location = useLocation();
@@ -19,9 +22,20 @@ const NavLink = ({ to, children }) => {
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+    const [alertVisible, setAlertVisible] = useState(false);
+    const navigate = useNavigate();
+    const handleStartGameClick =()=>{
+        if(window.innerWidth<=768){
+            setIsMenuOpen(false);
+            setAlertVisible(true);
+        }else{
+            navigate("/map");
+        }
+    }
     return (
-        <nav className="fixed top-0 w-full z-50 bg-transparent py-4" role="navigation" aria-label="Main navigation">
+        <>
+            {alertVisible && <Alert setVisible={setAlertVisible}/>}
+            <nav className="fixed top-0 w-full z-50 bg-transparent py-4" role="navigation" aria-label="Main navigation">
             <div className="ml-14 my-5 px-2">
                 <div className="flex justify-between items-center">
                     <div className="text-2xl font-bold text-green-500">
@@ -45,7 +59,7 @@ const Navbar = () => {
 
                     {/* Desktop menu */}
                     <div className="hidden md:flex md:space-x-6 lg:space-x-12 xl:space-x-24 font-bold font-main">
-                        <NavLink to="#about">About</NavLink>
+                        <ScrollLink to="about" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">About</ScrollLink>
                         <NavLink to="#how-to-play">How to Play</NavLink>
                         <NavLink to="#features">Features</NavLink>
                         <NavLink to="#faq">FAQ</NavLink>
@@ -54,10 +68,10 @@ const Navbar = () => {
 
                     {/* Play button */}
                     <div className="hidden md:block">
-                        <Link to="/map">
                             <button 
                                 className="mr-10 relative cursor-pointer opacity-90 hover:opacity-100 transition-opacity p-[2px] bg-black rounded-[16px] bg-gradient-to-t from-[#2e5b19] to-[#4e8b2a] active:scale-95"
                                 aria-label="Start playing"
+                                onClick={handleStartGameClick}
                             >
                                 <span className="w-full h-full flex items-center gap-2 px-8 py-3 bg-[#3b7322] text-white rounded-[14px] bg-gradient-to-t from-[#2e5b19] to-[#5aa636]">
                                     <svg
@@ -77,7 +91,6 @@ const Navbar = () => {
                                     Play Now
                                 </span>
                             </button>
-                        </Link>
                     </div>
                 </div>
 
@@ -87,18 +100,20 @@ const Navbar = () => {
                     className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'} mt-4 bg-black bg-opacity-90 rounded-lg p-4`}
                 >
                     <div className="flex flex-col space-y-4 font-bold font-main">
-                        <NavLink to="#about">About</NavLink>
+                    <ScrollLink to="about" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">About</ScrollLink>
                         <NavLink to="#how-to-play">How to Play</NavLink>
                         <NavLink to="#features">Features</NavLink>
                         <NavLink to="#faq">FAQ</NavLink>
                         <NavLink to="#contact">Contact</NavLink>
-                        <Link to="/map" className="text-white hover:text-green-400">
+                        <button  onClick={handleStartGameClick} className="text-white text-start hover:text-green-400">
                             Play Now
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </div>
         </nav>
+        </>
+        
     );
 };
 

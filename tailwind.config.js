@@ -19,6 +19,9 @@ export default {
         'main': ['"Rubik Bubbles"', 'serif'],
         'game': ['"Press Start 2P"','serif'],
       },
+      colors: {
+        whitesmoke: 'whitesmoke',
+      },
     },
   },
   plugins: [],

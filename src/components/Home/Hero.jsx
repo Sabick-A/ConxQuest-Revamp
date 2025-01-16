@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import backgroundImage from "../../assets/images/Home/background.jpg";
 import logo from "../../assets/images/common/logo.png";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Alert from "../common/Alert";
+import Message from "../common/Message";
 
 const StyledWrapper = styled.div`
     button {
@@ -175,7 +177,7 @@ const ScrollButton = styled.button`
 
 function Hero() {
     const [imagesLoaded, setImagesLoaded] = useState(false);
-
+    const navigate = useNavigate();
     useEffect(() => {
         const loadImages = async () => {
             try {
@@ -210,8 +212,20 @@ function Hero() {
         }
     };
 
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [messageVisible, setMessageVisible] = useState(false);
+    const handleStartGameClick =()=>{
+        if(window.innerWidth<=768){
+            setAlertVisible(true);
+        }else{
+            setMessageVisible(true);
+        }
+    }
+
     return (
         <BackgroundContainer image={backgroundImage} loaded={imagesLoaded}>
+            { alertVisible && <Alert setVisible={setAlertVisible}/> }
+            { messageVisible && <Message setVisible={setMessageVisible}/>}
             <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 flex flex-col items-center -translate-y-1/2 z-10">
                 <img 
                     src={logo} 
@@ -219,11 +233,9 @@ function Hero() {
                     className={`animate-bounce mb-5 transition-opacity duration-500 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
                 />
                 <StyledWrapper>
-                    <Link to="/map">
-                        <button className="btn-shine">
+                        <button onClick={handleStartGameClick} className="btn-shine">
                             <span>Start Game</span>
                         </button>
-                    </Link>
                 </StyledWrapper>
             </div>
             <ScrollButton 
