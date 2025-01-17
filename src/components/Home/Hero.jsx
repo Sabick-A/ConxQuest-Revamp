@@ -8,84 +8,51 @@ import Message from "../common/Message";
 
 const StyledWrapper = styled.div`
     button {
-        position: relative;
-        margin: 0;
-        padding: 17px 35px;
-        outline: none;
-        text-decoration: none;
+        width: 280px;
+        height: 65px;
         display: flex;
         justify-content: center;
         align-items: center;
         cursor: pointer;
         text-transform: uppercase;
-        border: 3px solid white;
-        border-radius: 10px;
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        border-radius: 15px;
         color: white;
         font-weight: 800;
         font-family: "Rubik Bubbles";
-        z-index: 0;
+        position: relative;
         overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.02, 0.01, 0.47, 1);
+        transition: all 0.4s cubic-bezier(0.2, 0.6, 0.3, 1);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+        @media (max-width: 768px) {
+            width: 180px;
+            height: 50px;
+            border-width: 2px;
+        }
     }
 
     button span {
-        color: white;
-        font-size: 14px;
+        position: relative;
+        z-index: 1;
+        font-size: 16px;
         font-weight: 800;
-        letter-spacing: 0.7px;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+        @media (max-width: 768px) {
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
     }
 
     button:hover {
-        animation: rotate624 0.7s ease-in-out both;
-    }
-
-    button:hover span {
-        animation: storm1261 0.7s ease-in-out both;
-        animation-delay: 0.06s;
-    }
-
-    @keyframes rotate624 {
-        0% {
-            transform: rotate(0deg) translate3d(0, 0, 0);
-        }
-
-        25% {
-            transform: rotate(3deg) translate3d(0, 0, 0);
-        }
-
-        50% {
-            transform: rotate(-3deg) translate3d(0, 0, 0);
-        }
-
-        75% {
-            transform: rotate(1deg) translate3d(0, 0, 0);
-        }
-
-        100% {
-            transform: rotate(0deg) translate3d(0, 0, 0);
-        }
-    }
-
-    @keyframes storm1261 {
-        0% {
-            transform: translate3d(0, 0, 0) translateZ(0);
-        }
-
-        25% {
-            transform: translate3d(4px, 0, 0) translateZ(0);
-        }
-
-        50% {
-            transform: translate3d(-3px, 0, 0) translateZ(0);
-        }
-
-        75% {
-            transform: translate3d(2px, 0, 0) translateZ(0);
-        }
-
-        100% {
-            transform: translate3d(0, 0, 0) translateZ(0);
-        }
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 1);
+        background: rgba(255, 255, 255, 0.15);
     }
 
     .btn-shine {
@@ -223,14 +190,14 @@ function Hero() {
     }
 
     return (
-        <BackgroundContainer image={backgroundImage} loaded={imagesLoaded}>
+        <BackgroundContainer image={backgroundImage} loaded={imagesLoaded} id="home">
             { alertVisible && <Alert setVisible={setAlertVisible}/> }
             { messageVisible && <Message setVisible={setMessageVisible}/>}
             <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 flex flex-col items-center -translate-y-1/2 z-10">
                 <img 
                     src={logo} 
                     alt="Logo" 
-                    className={`animate-bounce mb-5 transition-opacity duration-500 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    className={`animate-bounce mb-5 md:mb-5 mb-12 transition-all duration-700 transform hover:scale-110 ${imagesLoaded ? 'opacity-100 filter drop-shadow-2xl' : 'opacity-0'}`}
                 />
                 <StyledWrapper>
                         <button onClick={handleStartGameClick} className="btn-shine">

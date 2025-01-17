@@ -59,9 +59,11 @@ const Navbar = () => {
 
                     {/* Desktop menu */}
                     <div className="hidden md:flex md:space-x-6 lg:space-x-12 xl:space-x-24 font-bold font-main">
+                    <ScrollLink to="home" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Home</ScrollLink>
+
                         <ScrollLink to="about" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">About</ScrollLink>
+                        <ScrollLink to="features" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Features</ScrollLink>
                         <NavLink to="#how-to-play">How to Play</NavLink>
-                        <NavLink to="#features">Features</NavLink>
                         <NavLink to="#faq">FAQ</NavLink>
                         <NavLink to="#contact">Contact</NavLink>
                     </div>
@@ -100,9 +102,11 @@ const Navbar = () => {
                     className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'} mt-4 bg-black bg-opacity-90 rounded-lg p-4`}
                 >
                     <div className="flex flex-col space-y-4 font-bold font-main">
+                    <ScrollLink to="home" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Home</ScrollLink>
                     <ScrollLink to="about" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">About</ScrollLink>
+                    <ScrollLink to="features" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Features</ScrollLink>
                         <NavLink to="#how-to-play">How to Play</NavLink>
-                        <NavLink to="#features">Features</NavLink>
+                        
                         <NavLink to="#faq">FAQ</NavLink>
                         <NavLink to="#contact">Contact</NavLink>
                         <button  onClick={handleStartGameClick} className="text-white text-start hover:text-green-400">
