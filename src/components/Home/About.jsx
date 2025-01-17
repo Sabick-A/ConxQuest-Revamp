@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import styled from 'styled-components';
 import AnimatedText from './AnimatedText';
@@ -48,12 +48,17 @@ const AboutSection = styled.div`
 `;
 
 const Title = styled.h1`
-    opacity: 0;
     transform: translateY(20px);
-    animation: titleAppear 0.8s ease-out forwards;
+    opacity: 0;
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 3.5rem;
     margin-bottom: 2rem;
     position: relative;
+    
+    .animate-in & {
+        opacity: 1;
+        transform: translateY(0);
+    }
     
     &::after {
         content: '';
@@ -85,12 +90,17 @@ const Title = styled.h1`
         font-size: 2rem;
         margin-bottom: 1rem;
     }
-    
-    @keyframes titleAppear {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+`;
+
+const AnimatedContent = styled.div`
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 200ms;
+
+    .animate-in & {
+        opacity: 1;
+        transform: translateY(0);
     }
 `;
 
@@ -99,23 +109,55 @@ const Content = styled.div`
     margin: 0 auto;
     position: relative;
     z-index: 1;
+
+    @media (max-width: 768px) {
+        width: 90%;
+    }
 `;
 
 function About() {
     useScrollAnimation();
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const aboutSection = document.getElementById('about');
+            const aboutSectionTop = aboutSection.offsetTop;
+            const aboutSectionHeight = aboutSection.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const scrollPosition = window.scrollY;
+
+            if (scrollPosition + viewportHeight > aboutSectionTop + aboutSectionHeight / 2) {
+                setIsVisible(true);
+            } else {
+                setIsVisible(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     return (
         <AboutSection id='about'>
-            <Content className='w-9/12 text-center relative z-10 space-y-12'>
+            <Content className='w-9/12 text-center relative z-10 space-y-8 md:space-y-12'>
                 <div className='animate-on-scroll'>
                     <Title className='text-white font-bold font-main'>
                         About
                     </Title>
                 </div>
-                <AnimatedText 
-                    text="Explore the vibrant ConxQuest Island, where learning meets adventure. Dive into interactive quests, solve engaging puzzles, and uncover the wonders of the Constitution. ConxQuest transforms education into an exciting treasure hunt, making every step of your learning experience unforgettable. 🌟"
-                    className='text-white mt-10 w-2/3 text-lg font-main mx-auto leading-relaxed'
-                />
+                <div className='animate-on-scroll'>
+                    <AnimatedContent>
+                        <AnimatedText 
+                            key={isVisible ? 'visible' : 'hidden'}
+                            text="Explore the vibrant ConxQuest Island, where learning meets adventure. Dive into interactive quests, solve engaging puzzles, and uncover the wonders of the Constitution. ConxQuest transforms education into an exciting treasure hunt, making every step of your learning experience unforgettable. 🌟"
+                            className='text-white mt-6 md:mt-10 w-full md:w-2/3 text-base md:text-lg font-main mx-auto leading-relaxed'
+                        />
+                    </AnimatedContent>
+                </div>
             </Content>
         </AboutSection>
     );
