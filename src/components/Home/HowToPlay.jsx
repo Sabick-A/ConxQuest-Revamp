@@ -7,15 +7,45 @@ import { PlayCircle, Map, BookOpen, Trophy, Users, MessageSquareMore } from 'luc
 const HowToPlaySection = styled.div`
     min-height: 100vh;
     width: 100%;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    place-items: center;
     background-color: rgb(5, 46, 22);
     position: relative;
     overflow: hidden;
     padding: 60px 0;
+    margin-top: -60px;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 150px;
+        background: linear-gradient(to bottom, rgb(5, 46, 22) 0%, transparent 100%);
+        z-index: 2;
+    }
 
     @media (max-width: 768px) {
-        padding: 60px 0;
+        padding: 40px 0;
+        margin-top: -40px;
+
+        &::before {
+            height: 100px;
+        }
+    }
+`;
+
+const ContentContainer = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+    z-index: 2;
+
+    @media (max-width: 768px) {
+        gap: 2rem;
     }
 `;
 
@@ -28,11 +58,11 @@ const Background = styled(motion.div)`
     overflow: hidden;
     z-index: 1;
     background: 
-        linear-gradient(120deg, rgba(5, 46, 22, 0.95) 0%, rgba(5, 46, 22, 0.98) 100%),
+        linear-gradient(120deg, rgba(5, 46, 22, 0.97) 0%, rgba(5, 46, 22, 0.99) 100%),
         repeating-linear-gradient(
             45deg,
-            rgba(74, 222, 128, 0.1) 0px,
-            rgba(74, 222, 128, 0.1) 2px,
+            rgba(74, 222, 128, 0.08) 0px,
+            rgba(74, 222, 128, 0.08) 2px,
             transparent 2px,
             transparent 10px
         );
@@ -40,24 +70,105 @@ const Background = styled(motion.div)`
     &::before {
         content: '';
         position: absolute;
-        width: 200%;
-        height: 200%;
-        top: -50%;
-        left: -50%;
-        background: radial-gradient(
-            circle at center,
-            rgba(74, 222, 128, 0.1) 0%,
-            transparent 50%
-        );
-        animation: rotate 30s linear infinite;
+        width: 150%;
+        height: 150%;
+        top: -25%;
+        left: -25%;
+        background: 
+            radial-gradient(
+                ellipse at top left,
+                rgba(74, 222, 128, 0.12) 0%,
+                transparent 50%
+            ),
+            radial-gradient(
+                ellipse at bottom right,
+                rgba(74, 222, 128, 0.12) 0%,
+                transparent 50%
+            );
+        animation: shimmer 10s ease-in-out infinite;
+        filter: blur(8px);
     }
 
-    @keyframes rotate {
-        from {
-            transform: rotate(0deg);
+    &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: 
+            linear-gradient(
+                45deg,
+                transparent 0%,
+                rgba(74, 222, 128, 0.1) 25%,
+                transparent 50%,
+                rgba(74, 222, 128, 0.1) 75%,
+                transparent 100%
+            );
+        animation: wave 8s linear infinite;
+        filter: blur(3px);
+    }
+
+    @keyframes shimmer {
+        0%, 100% {
+            opacity: 0.5;
+            transform: translate(-5%, -5%) scale(1);
         }
-        to {
-            transform: rotate(360deg);
+        25% {
+            opacity: 0.7;
+            transform: translate(5%, 5%) scale(1.02);
+        }
+        50% {
+            opacity: 0.5;
+            transform: translate(5%, -5%) scale(1);
+        }
+        75% {
+            opacity: 0.7;
+            transform: translate(-5%, 5%) scale(1.02);
+        }
+    }
+
+    @keyframes wave {
+        0% {
+            background-position: 0% 0%;
+        }
+        100% {
+            background-position: 200% 200%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        &::before {
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: 
+                radial-gradient(
+                    ellipse at top left,
+                    rgba(74, 222, 128, 0.2) 0%,
+                    transparent 60%
+                ),
+                radial-gradient(
+                    ellipse at bottom right,
+                    rgba(74, 222, 128, 0.2) 0%,
+                    transparent 60%
+                );
+            animation-duration: 8s;
+        }
+
+        &::after {
+            background: 
+                linear-gradient(
+                    45deg,
+                    transparent 0%,
+                    rgba(74, 222, 128, 0.15) 25%,
+                    transparent 50%,
+                    rgba(74, 222, 128, 0.15) 75%,
+                    transparent 100%
+                );
+            background-size: 200% 200%;
+            animation-duration: 6s;
         }
     }
 `;
@@ -234,7 +345,7 @@ const CardsContainer = styled(motion.div)`
     grid-template-columns: repeat(2, minmax(300px, 450px));
     gap: 2.5rem;
     width: 95%;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     position: relative;
     z-index: 20;
@@ -243,16 +354,15 @@ const CardsContainer = styled(motion.div)`
     justify-content: center;
 
     @media (max-width: 1024px) {
-        grid-template-columns: repeat(2, minmax(250px, 350px));
+        grid-template-columns: repeat(2, minmax(280px, 400px));
         gap: 2rem;
-        width: 90%;
     }
 
     @media (max-width: 768px) {
         grid-template-columns: repeat(2, minmax(150px, 1fr));
-        gap: 1.25rem;
-        width: 85%;
+        gap: 1.5rem;
         padding: 0.5rem;
+        width: 90%;
     }
 
     @media (max-width: 480px) {
@@ -395,64 +505,66 @@ function HowToPlay() {
             <Background 
                 animate={{
                     background: [
-                        'linear-gradient(120deg, rgba(5, 46, 22, 0.95) 0%, rgba(5, 46, 22, 0.98) 100%)',
-                        'linear-gradient(120deg, rgba(5, 46, 22, 0.98) 0%, rgba(5, 46, 22, 0.95) 100%)'
+                        'linear-gradient(120deg, rgba(5, 46, 22, 0.92) 0%, rgba(5, 46, 22, 0.96) 100%)',
+                        'linear-gradient(120deg, rgba(5, 46, 22, 0.96) 0%, rgba(5, 46, 22, 0.92) 100%)'
                     ]
                 }}
-                transition={{ duration: 5, repeat: Infinity, repeatType: "reverse" }}
+                transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
             />
-            <Title className='font-main text-white'>How To Play</Title>
-            <CardsContainer
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-            >
-                {instructions.map((instruction, index) => (
-                    <Card 
-                        key={index} 
-                        variants={cardVariants}
-                        className="how-to-play-card"
-                        onClick={() => handleCardClick(index)}
-                        whileHover={{ scale: 1.02 }}
-                    >
-                        <IconWrapper>
-                            {instruction.icon}
-                        </IconWrapper>
-                        <CardTitle>{instruction.title}</CardTitle>
-                        {!isMobile && (
-                            <CardDescription className='font-main'>{instruction.description}</CardDescription>
-                        )}
-                    </Card>
-                ))}
-            </CardsContainer>
-
-            {isMobile && selectedCard !== null && (
-                <ModalOverlay
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={closeModal}
+            <ContentContainer>
+                <Title className='font-main text-white'>How To Play</Title>
+                <CardsContainer
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
                 >
-                    <ModalCard
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.8, opacity: 0 }}
-                        onClick={(e) => e.stopPropagation()}
+                    {instructions.map((instruction, index) => (
+                        <Card 
+                            key={index} 
+                            variants={cardVariants}
+                            className="how-to-play-card"
+                            onClick={() => handleCardClick(index)}
+                            whileHover={{ scale: 1.02 }}
+                        >
+                            <IconWrapper>
+                                {instruction.icon}
+                            </IconWrapper>
+                            <CardTitle>{instruction.title}</CardTitle>
+                            {!isMobile && (
+                                <CardDescription className='font-main'>{instruction.description}</CardDescription>
+                            )}
+                        </Card>
+                    ))}
+                </CardsContainer>
+
+                {isMobile && selectedCard !== null && (
+                    <ModalOverlay
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={closeModal}
                     >
-                        <CloseButton onClick={closeModal}>✕</CloseButton>
-                        <IconWrapper style={{ marginBottom: '1rem' }}>
-                            {instructions[selectedCard].icon}
-                        </IconWrapper>
-                        <CardTitle style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>
-                            {instructions[selectedCard].title}
-                        </CardTitle>
-                        <CardDescription>
-                            {instructions[selectedCard].description}
-                        </CardDescription>
-                    </ModalCard>
-                </ModalOverlay>
-            )}
+                        <ModalCard
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.8, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <CloseButton onClick={closeModal}>✕</CloseButton>
+                            <IconWrapper style={{ marginBottom: '1rem' }}>
+                                {instructions[selectedCard].icon}
+                            </IconWrapper>
+                            <CardTitle style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>
+                                {instructions[selectedCard].title}
+                            </CardTitle>
+                            <CardDescription>
+                                {instructions[selectedCard].description}
+                            </CardDescription>
+                        </ModalCard>
+                    </ModalOverlay>
+                )}
+            </ContentContainer>
         </HowToPlaySection>
     );
 }

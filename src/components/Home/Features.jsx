@@ -188,21 +188,47 @@ const ImageContainer = styled(motion.div)`
         background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.3));
         z-index: 1;
     }
-    
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
-    }
+`;
 
-    &:hover img {
-        transform: translate(-50%, -50%) scale(1.1);
+const ImagePreloader = styled.div`
+    display: none;
+    visibility: hidden;
+    height: 0;
+    width: 0;
+`;
+
+const StyledImage = styled(motion.img)`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    opacity: ${props => props.$isLoaded ? 1 : 0};
+    transition: opacity 0.3s ease-in-out;
+`;
+
+const ImageSkeleton = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(74, 222, 128, 0.1) 25%,
+        rgba(74, 222, 128, 0.15) 37%,
+        rgba(74, 222, 128, 0.1) 63%
+    );
+    background-size: 400% 100%;
+    animation: shimmerAnimation 1.4s ease infinite;
+    border-radius: inherit;
+
+    @keyframes shimmerAnimation {
+        0% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0 50%;
+        }
     }
 `;
 
@@ -335,7 +361,7 @@ const ProgressDot = styled.div`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: ${props => props.active ? '#4ade80' : 'rgba(255,255,255,0.2)'};
+    background: ${props => props.active ? '#4ade80' : 'rgba(255, 255, 255, 0.2)'};
     transition: all 0.3s ease;
     cursor: pointer;
 
@@ -414,6 +440,24 @@ function Features() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState({});
+
+    useEffect(() => {
+        const preloadImages = () => {
+            features.forEach((feature, index) => {
+                const img = new Image();
+                img.src = feature.icon;
+                img.onload = () => {
+                    setImageLoaded(prev => ({
+                        ...prev,
+                        [index]: true
+                    }));
+                };
+            });
+        };
+
+        preloadImages();
+    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -451,7 +495,8 @@ function Features() {
             <Background
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}>
+                transition={{ duration: 1 }}
+            >
                 <HexGrid>
                     {[...Array(32)].map((_, index) => (
                         <Hexagon
@@ -471,6 +516,11 @@ function Features() {
                     ))}
                 </HexGrid>
             </Background>
+            <ImagePreloader>
+                {features.map((feature, index) => (
+                    <link key={index} rel="preload" as="image" href={feature.icon} />
+                ))}
+            </ImagePreloader>
             <ContentWrapper
                 initial="hidden"
                 animate={isVisible ? "visible" : "hidden"}
@@ -506,9 +556,19 @@ function Features() {
                                 bgColor={features[currentIndex].bgColor}
                                 whileHover={{ scale: 1.05, rotate: 5 }}
                             >
-                                <img 
-                                    src={features[currentIndex].icon} 
-                                    alt={features[currentIndex].name} 
+                                {!imageLoaded[currentIndex] && <ImageSkeleton />}
+                                <StyledImage
+                                    src={features[currentIndex].icon}
+                                    alt={features[currentIndex].name}
+                                    $isLoaded={imageLoaded[currentIndex]}
+                                    onLoad={() => {
+                                        setImageLoaded(prev => ({
+                                            ...prev,
+                                            [currentIndex]: true
+                                        }));
+                                    }}
+                                    loading="eager"
+                                    decoding="async"
                                 />
                             </ImageContainer>
                             <ContentContainer>
