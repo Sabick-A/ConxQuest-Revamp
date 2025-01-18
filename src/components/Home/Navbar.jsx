@@ -46,7 +46,7 @@ const Navbar = () => {
 
                     {/* Mobile menu button */}
                     <button 
-                        className="md:hidden p-2 text-white"
+                        className="xl:hidden p-2 text-white"
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         aria-expanded={isMenuOpen}
                         aria-controls="mobile-menu"
@@ -58,18 +58,18 @@ const Navbar = () => {
                     </button>
 
                     {/* Desktop menu */}
-                    <div className="hidden md:flex md:space-x-6 lg:space-x-12 xl:space-x-24 font-bold font-main">
+                    <div className="hidden xl:flex md:space-x-6 lg:space-x-12 xl:space-x-24 font-bold font-main">
                     <ScrollLink to="home" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Home</ScrollLink>
 
                         <ScrollLink to="about" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">About</ScrollLink>
                         <ScrollLink to="features" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Features</ScrollLink>
-                        <NavLink to="#how-to-play">How to Play</NavLink>
+                        <ScrollLink to="howtoplay" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">How To Play</ScrollLink>
                         <NavLink to="#faq">FAQ</NavLink>
                         <NavLink to="#contact">Contact</NavLink>
                     </div>
 
                     {/* Play button */}
-                    <div className="hidden md:block">
+                    <div className="hidden xl:block">
                             <button 
                                 className="mr-10 relative cursor-pointer opacity-90 hover:opacity-100 transition-opacity p-[2px] bg-black rounded-[16px] bg-gradient-to-t from-[#2e5b19] to-[#4e8b2a] active:scale-95"
                                 aria-label="Start playing"
@@ -99,13 +99,13 @@ const Navbar = () => {
                 {/* Mobile menu */}
                 <div 
                     id="mobile-menu"
-                    className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'} mt-4 bg-black bg-opacity-90 rounded-lg p-4`}
+                    className={`xl:hidden ${isMenuOpen ? 'block' : 'hidden'} mt-4 bg-black bg-opacity-90 rounded-lg p-4`}
                 >
                     <div className="flex flex-col space-y-4 font-bold font-main">
                     <ScrollLink to="home" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Home</ScrollLink>
                     <ScrollLink to="about" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">About</ScrollLink>
                     <ScrollLink to="features" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Features</ScrollLink>
-                        <NavLink to="#how-to-play">How to Play</NavLink>
+                    <ScrollLink to="howtoplay" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">How To Play</ScrollLink>
                         
                         <NavLink to="#faq">FAQ</NavLink>
                         <NavLink to="#contact">Contact</NavLink>

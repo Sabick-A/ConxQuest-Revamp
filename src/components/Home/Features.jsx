@@ -16,7 +16,7 @@ const FeaturesSection = styled.div`
     background-color: rgb(5, 46, 22);
     position: relative;
     overflow: hidden;
-    padding-top: 80px;
+    padding-top: 20px;
 
     @media (max-width: 768px) {
         padding-top: 100px;
@@ -69,7 +69,8 @@ const Title = styled(motion.h1)`
     margin-bottom: 4rem;
     position: relative;
     z-index: 20;
-    font-size: 3.5rem;
+    font-size: 3rem;
+    text-align: center;
     
     @media (max-width: 1024px) {
         font-size: 3rem;
@@ -78,15 +79,15 @@ const Title = styled(motion.h1)`
     }
 
     @media (max-width: 768px) {
-        font-size: 2.5rem;
-        padding-top: 2rem;
-        margin-bottom: 2rem;
+        font-size: 2.2rem;
+        padding-top: 1.5rem;
+        margin-bottom: 1.5rem;
     }
 
     @media (max-width: 480px) {
-        font-size: 2rem;
-        padding-top: 1rem;
-        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+        padding-top: 0.5rem;
+        margin-bottom: 1rem;
     }
     
     @keyframes titleAppear {
@@ -108,8 +109,9 @@ const Title = styled(motion.h1)`
         border-radius: 2px;
 
         @media (max-width: 768px) {
-            width: 80px;
+            width: 60px;
             height: 3px;
+            bottom: -5px;
         }
     }
 `;
@@ -117,6 +119,7 @@ const Title = styled(motion.h1)`
 const CarouselContainer = styled(motion.div)`
     width: 90%;
     max-width: 1400px;
+    height: 70vh;
     margin: 0 auto 2rem auto;
     display: flex;
     align-items: center;
@@ -131,6 +134,26 @@ const CarouselContainer = styled(motion.div)`
     @media (max-width: 1024px) {
         flex-direction: column;
         gap: 2rem;
+        padding: 1.5rem;
+        width: 92%;
+        height: auto;
+        min-height: 60vh;
+    }
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+        gap: 1rem;
+        width: 90%;
+        min-height: 50vh;
+    }
+
+    @media (max-width: 480px) {
+        width: 90%;
+        padding: 0.75rem;
+        gap: 0.75rem;
+        margin: 0 auto 1rem auto;
+        border-radius: 20px;
+        min-height: auto;
     }
 `;
 
@@ -143,6 +166,21 @@ const ImageContainer = styled(motion.div)`
     background: ${props => props.bgColor || '#2A1810'};
     box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     
+    @media (max-width: 1024px) {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+        max-width: 300px;
+    }
+
+    @media (max-width: 480px) {
+        max-width: 250px;
+        border-radius: 15px;
+    }
+
     &::before {
         content: '';
         position: absolute;
@@ -188,17 +226,18 @@ const FeatureName = styled(motion.h2)`
     text-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
 
     @media (max-width: 1024px) {
-        font-size: 3rem;
+        font-size: 2.8rem;
         margin-bottom: 1rem;
+        text-align: center;
     }
 
     @media (max-width: 768px) {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
+        font-size: 2.2rem;
+        margin-bottom: 0.75rem;
     }
 
     @media (max-width: 480px) {
-        font-size: 2rem;
+        font-size: 1.8rem;
         margin-bottom: 0.5rem;
     }
 `;
@@ -216,6 +255,11 @@ const FeatureDescription = styled(motion.p)`
     @media (max-width: 1024px) {
         font-size: 1.1rem;
         margin-bottom: 2rem;
+        text-align: center;
+        padding-left: 0;
+        border-left: none;
+        border-bottom: 2px solid #4ade80;
+        padding-bottom: 1rem;
     }
 
     @media (max-width: 768px) {
@@ -226,6 +270,7 @@ const FeatureDescription = styled(motion.p)`
     @media (max-width: 480px) {
         font-size: 0.9rem;
         margin-bottom: 1rem;
+        line-height: 1.6;
     }
 `;
 
@@ -325,7 +370,7 @@ const features = [
         description: "Each level provides resources to enhance learning and understanding of constitutional topics."
     },
     {
-        name: "Interactable Non-Player Characters (NPCs)",
+        name: "Interactable NPCs",
         icon: npc,
         bgColor: "#2A1810",
         description: "NPCs are present throughout the game for interactions, guidance, and additional challenges."

@@ -3,6 +3,7 @@ import Navbar from '../components/Home/Navbar'
 import Hero from '../components/Home/Hero'
 import About from '../components/Home/About'
 import Features from '../components/Home/Features'
+import HowToPlay from '../components/Home/HowToPlay'
 
 function Home() {
   return (
@@ -11,6 +12,7 @@ function Home() {
       <Hero/>
       <About/>
       <Features/>
+      <HowToPlay/>
     </div>
   )
 }

@@ -15,11 +15,6 @@ const AboutSection = styled.div`
     margin-top: -2px; /* Add negative margin to remove gap */
     padding-top: 82px; /* Adjusted padding to compensate for negative margin */
 
-    @media (max-width: 768px) {
-        padding-top: 200px;
-        align-items: flex-start;
-    }
-
     &::before {
         content: '';
         position: absolute;
@@ -95,7 +90,7 @@ const Title = styled.h1`
 const AnimatedContent = styled.div`
     opacity: 0;
     transform: translateY(20px);
-    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     transition-delay: 200ms;
 
     .animate-in & {
@@ -109,6 +104,7 @@ const Content = styled.div`
     margin: 0 auto;
     position: relative;
     z-index: 1;
+    transform: translateY(-20px);
 
     @media (max-width: 768px) {
         width: 90%;

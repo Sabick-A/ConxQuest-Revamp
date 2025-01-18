@@ -197,7 +197,7 @@ function Hero() {
                 <img 
                     src={logo} 
                     alt="Logo" 
-                    className={`animate-bounce mb-5 md:mb-5 mb-12 transition-all duration-700 transform hover:scale-110 ${imagesLoaded ? 'opacity-100 filter drop-shadow-2xl' : 'opacity-0'}`}
+                    className={`animate-bounce  md:mb-5 mb-12 transition-all duration-700 transform hover:scale-110 ${imagesLoaded ? 'opacity-100 filter drop-shadow-2xl' : 'opacity-0'}`}
                 />
                 <StyledWrapper>
                         <button onClick={handleStartGameClick} className="btn-shine">
