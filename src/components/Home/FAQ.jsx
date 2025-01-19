@@ -1,7 +1,6 @@
-import React, { useState ,useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
-import { motion } from "framer-motion";
-import AnimatedText from "./AnimatedText";
+import { motion, AnimatePresence } from "framer-motion";
 
 const FAQSection = styled.div`
   min-height: 100vh;
@@ -12,7 +11,7 @@ const FAQSection = styled.div`
   background-color: rgb(5, 46, 22);
   position: relative;
   overflow: hidden;
-  margin-top: -2px;
+  margin-top: -2px;g
   padding-top: 82px;
 `;
 
@@ -106,6 +105,8 @@ const FAQAnswer = styled(motion.div)`
   padding: 0 1rem;
   color: #e2e8f0;
   overflow: hidden;
+  transform-origin: top;
+  will-change: height, opacity;
 `;
 
 const Title = styled(motion.h1)`
@@ -195,60 +196,57 @@ const faqData = [
 function FAQ() {
   const [activeIndex, setActiveIndex] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
-  // Generate a starry background with different sized stars
-  const stars = Array.from({ length: 80 }, (_, i) => {
-    const size = Math.random() * 12 + 8 + "px"; // Random size between 8-20px
-    const left = Math.random() * 100 + "%";
-    const top = Math.random() * 100 + "%";
-    const brightness = Math.random() * 0.6 + 0.4; // Increased brightness range
-    const glow = Math.random() * 12 + 6 + "px"; // Increased glow effect
+  const stars = useMemo(() => {
+    return Array.from({ length: 40 }, (_, i) => {
+      const size = Math.floor(Math.random() * 12 + 8) + "px";
+      const left = Math.floor(Math.random() * 100) + "%";
+      const top = Math.floor(Math.random() * 100) + "%";
+      const brightness = (Math.floor(Math.random() * 6) + 4) / 10;
+      const glow = Math.floor(Math.random() * 12 + 6) + "px";
+      const rotationDuration = 3 + Math.floor(i / 10) * 2;
+      const scaleDuration = 2 + Math.floor(i / 8) * 1.5;
 
-    return (
-      <Star
-        key={i}
-        size={size}
-        brightness={brightness}
-        glow={glow}
-        initial={{
-          opacity: 0,
-          scale: 0,
-          x: left,
-          y: top,
-        }}
-        animate={{
-          opacity: brightness,
-          scale: [1, 1.3, 1], // Increased scale effect
-          rotate: [0, 180, 0],
-          transition: {
-            opacity: {
-              duration: 0.5,
-              delay: i * 0.02,
-            },
+      return (
+        <Star
+          key={i}
+          size={size}
+          brightness={brightness}
+          glow={glow}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{
+            opacity: brightness,
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 0],
+          }}
+          transition={{
+            opacity: { duration: 0.3, delay: i * 0.02 },
             scale: {
               repeat: Infinity,
-              duration: 2.5 + Math.random() * 2,
+              duration: scaleDuration,
               ease: "easeInOut",
             },
             rotate: {
               repeat: Infinity,
-              duration: 5 + Math.random() * 3,
+              duration: rotationDuration,
               ease: "linear",
             },
-          },
-        }}
-        style={{
-          position: "absolute",
-          left,
-          top,
-          filter: `hue-rotate(${Math.random() * 30}deg)`,
-        }}
-      />
-    );
-  });
+          }}
+          style={{
+            position: "absolute",
+            left,
+            top,
+            filter: `hue-rotate(${Math.floor(Math.random() * 30)}deg)`,
+          }}
+        />
+      );
+    });
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -258,12 +256,38 @@ function FAQ() {
     );
 
     const section = document.getElementById("faq");
-    if (section) observer.observe(section);
-
-    return () => {
-      if (section) observer.unobserve(section);
-    };
+    if (section) {
+      observer.observe(section);
+      return () => observer.unobserve(section);
+    }
   }, []);
+
+  const answerVariants = {
+    open: {
+      height: "auto",
+      opacity: 1,
+      transition: {
+        height: {
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+        },
+        opacity: { duration: 0.2 },
+      },
+    },
+    closed: {
+      height: 0,
+      opacity: 0,
+      transition: {
+        height: {
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+        },
+        opacity: { duration: 0.2 },
+      },
+    },
+  };
 
   return (
     <FAQSection id="faq" className="animate-on-scroll">
@@ -279,32 +303,32 @@ function FAQ() {
         >
           Frequently Asked Questions
         </Title>
-        {faqData.map((faq, index) => (
-          <FAQItem
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.2 }}
-          >
-            <FAQQuestion onClick={() => toggleFAQ(index)}>
-              <span className="font-game text-xs">{faq.question}</span>
-              <span>{activeIndex === index ? "−" : "+"}</span>
-            </FAQQuestion>
-            <FAQAnswer
-              animate={{
-                height: activeIndex === index ? "auto" : 0,
-                opacity: activeIndex === index ? 1 : 0,
-              }}
-              transition={{ duration: 0.3 }}
+        <AnimatePresence mode="wait">
+          {faqData.map((faq, index) => (
+            <FAQItem
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
             >
-              <p className="font-game text-xs pb-4">{faq.answer}</p>
-            </FAQAnswer>
-          </FAQItem>
-        ))}
+              <FAQQuestion onClick={() => toggleFAQ(index)}>
+                <span className="font-game text-xs">{faq.question}</span>
+                <span>{activeIndex === index ? "−" : "+"}</span>
+              </FAQQuestion>
+              <FAQAnswer
+                initial="closed"
+                animate={activeIndex === index ? "open" : "closed"}
+                variants={answerVariants}
+              >
+                <p className="font-game text-xs pb-4">{faq.answer}</p>
+              </FAQAnswer>
+            </FAQItem>
+          ))}
+        </AnimatePresence>
       </FAQContainer>
     </FAQSection>
   );
 }
 
-export default FAQ;
+export default React.memo(FAQ);

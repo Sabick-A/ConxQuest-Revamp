@@ -263,54 +263,59 @@ const IconWrapper = styled.div`
 `;
 
 const Card = styled(motion.div)`
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 2.5rem 2rem;
+    position: relative;
+    background: rgba(20, 83, 45, 0.6);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.25rem;
     text-align: center;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    cursor: pointer;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    height: 100%;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
 
     &::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        inset: 0;
         background: radial-gradient(
-            circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            circle at var(--mouse-x) var(--mouse-y),
             rgba(74, 222, 128, 0.1) 0%,
-            transparent 50%
+            transparent 60%
         );
         opacity: 0;
         transition: opacity 0.3s ease;
     }
 
-    &:hover {
-        transform: translateY(-8px) scale(1.015);
-        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.2);
-
-        &::before {
-            opacity: 1;
-        }
-
-        ${IconWrapper} {
-            transform: scale(1.08) rotate(5deg);
-            box-shadow: 0 0 25px rgba(74, 222, 128, 0.3);
-        }
+    &:hover::before {
+        opacity: 1;
     }
 
     @media (max-width: 768px) {
-        padding: 2rem 1.5rem;
+        padding-bottom: 2.5rem;
+        
+        &::after {
+            content: 'Tap to read more';
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            color: #4ade80;
+            opacity: 0.8;
+            font-family: 'game', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
     }
 `;
 
@@ -526,6 +531,7 @@ function HowToPlay() {
                             className="how-to-play-card"
                             onClick={() => handleCardClick(index)}
                             whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                         >
                             <IconWrapper>
                                 {instruction.icon}

@@ -5,20 +5,6 @@ import {Link as ScrollLink} from 'react-scroll'
 import { useNavigate } from "react-router-dom";
 import Alert from "../common/Alert";
 
-const NavLink = ({ to, children }) => {
-    const location = useLocation();
-    const isActive = location.hash === to;
-    
-    return (
-        <Link 
-            to={to} 
-            className={`text-white hover:text-green-400 transition-colors ${isActive ? 'text-green-400' : ''}`}
-            aria-current={isActive ? 'page' : undefined}
-        >
-            {children}
-        </Link>
-    );
-};
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);

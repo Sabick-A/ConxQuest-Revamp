@@ -109,17 +109,6 @@ const NavItem = styled(motion.li)`
     margin-bottom: 0.75rem;
 `;
 
-const StyledScrollLink = styled(ScrollLink)`
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: color 0.3s ease;
-    cursor: pointer;
-    display: inline-block;
-
-    &:hover {
-        color: #4ade80;
-    }
-`;
 
 const SocialLinks = styled(motion.div)`
     display: flex;
@@ -295,27 +284,14 @@ const Footer = () => {
                         variants={itemVariants}
                     >
                         <Title className="font-main"variants={itemVariants}>Quick Links</Title>
-                        <NavList>
-                            {['about', 'features', 'how-to-play', 'faq'].map((item, index) => (
-                                <NavItem
-                                    key={item}
-                                    variants={itemVariants}
-                                    custom={index}
-                                >
-                                    <StyledScrollLink
-                                        to={item}
-                                        smooth={true}
-                                        duration={500}
-                                        as={motion.div}
-                                        variants={linkVariants}
-                                        whileHover="hover"
-                                        whileTap="tap"
-                                    >
-                                        <span className='font-game text-xs'>{item.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span>
-                                    </StyledScrollLink>
-                                </NavItem>
-                            ))}
-                        </NavList>
+                        <div className="flex flex-col space-y-2 font-game text-xs">
+                    <ScrollLink to="home" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Home</ScrollLink>
+
+                        <ScrollLink to="about" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">About</ScrollLink>
+                        <ScrollLink to="features" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Features</ScrollLink>
+                        <ScrollLink to="howtoplay" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">How To Play</ScrollLink>
+                        <ScrollLink to="faq" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">FAQ</ScrollLink>
+                    </div>
                     </Column>
                     <Column variants={itemVariants}>
                         <Title className="font-main" variants={itemVariants}>Connect With Developer</Title>
