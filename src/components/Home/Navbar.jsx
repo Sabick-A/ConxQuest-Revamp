@@ -64,8 +64,8 @@ const Navbar = () => {
                         <ScrollLink to="about" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">About</ScrollLink>
                         <ScrollLink to="features" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Features</ScrollLink>
                         <ScrollLink to="howtoplay" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">How To Play</ScrollLink>
-                        <NavLink to="#faq">FAQ</NavLink>
-                        <NavLink to="#contact">Contact</NavLink>
+                        <ScrollLink to="faq" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">FAQ</ScrollLink>
+                        <ScrollLink to="contact" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Contact</ScrollLink>
                     </div>
 
                     {/* Play button */}
@@ -107,8 +107,8 @@ const Navbar = () => {
                     <ScrollLink to="features" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Features</ScrollLink>
                     <ScrollLink to="howtoplay" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">How To Play</ScrollLink>
                         
-                        <NavLink to="#faq">FAQ</NavLink>
-                        <NavLink to="#contact">Contact</NavLink>
+                        <ScrollLink to="faq" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">FAQ</ScrollLink>
+                        <ScrollLink to="contact" smooth={true} duration={500} className="text-white hover:text-green-400 transition-colors cursor-pointer">Contact</ScrollLink>
                         <button  onClick={handleStartGameClick} className="text-white text-start hover:text-green-400">
                             Play Now
                         </button>

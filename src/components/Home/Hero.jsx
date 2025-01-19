@@ -88,16 +88,16 @@ const StyledWrapper = styled.div`
 const BackgroundContainer = styled.div`
     min-height: 100vh;
     width: 100%;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url(${props => props.image});
+    background-image: url(${props => props.$image});
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: ${props => props.loaded ? 1 : 0};
+    opacity: ${props => props.$loaded ? 1 : 0};
     transition: opacity 0.5s ease-in-out;
-    position: relative;
 
     &::after {
         content: '';
@@ -190,7 +190,7 @@ function Hero() {
     }
 
     return (
-        <BackgroundContainer image={backgroundImage} loaded={imagesLoaded} id="home">
+        <BackgroundContainer $image={backgroundImage} $loaded={imagesLoaded} id="home">
             { alertVisible && <Alert setVisible={setAlertVisible}/> }
             { messageVisible && <Message setVisible={setMessageVisible}/>}
             <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 flex flex-col items-center -translate-y-1/2 z-10">

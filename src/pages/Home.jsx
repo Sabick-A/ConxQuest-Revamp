@@ -4,6 +4,8 @@ import Hero from '../components/Home/Hero'
 import About from '../components/Home/About'
 import Features from '../components/Home/Features'
 import HowToPlay from '../components/Home/HowToPlay'
+import FAQ from '../components/Home/FAQ'
+import Footer from '../components/Home/Footer'
 
 function Home() {
   return (
@@ -13,6 +15,8 @@ function Home() {
       <About/>
       <Features/>
       <HowToPlay/>
+      <FAQ/>
+      <Footer/>
     </div>
   )
 }

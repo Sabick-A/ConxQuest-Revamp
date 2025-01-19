@@ -161,11 +161,11 @@ const ImageContainer = styled(motion.div)`
     flex: 0.5;
     aspect-ratio: 1;
     position: relative;
-    border-radius: 20px;
+    border-radius: 10px;
     overflow: hidden;
-    background: ${props => props.bgColor || '#2A1810'};
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    
+    background-color: ${props => props.$bgColor || 'rgba(20, 83, 45, 0.6)'};
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
     @media (max-width: 1024px) {
         width: 100%;
         max-width: 400px;
@@ -201,9 +201,9 @@ const StyledImage = styled(motion.img)`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: inherit;
-    opacity: ${props => props.$isLoaded ? 1 : 0};
+    border-radius: 10px;
     transition: opacity 0.3s ease-in-out;
+    opacity: ${props => props.$isLoaded ? 1 : 0};
 `;
 
 const ImageSkeleton = styled.div`
@@ -358,15 +358,17 @@ const ProgressBar = styled.div`
 `;
 
 const ProgressDot = styled.div`
-    width: 8px;
-    height: 8px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    background: ${props => props.active ? '#4ade80' : 'rgba(255, 255, 255, 0.2)'};
-    transition: all 0.3s ease;
+    background-color: ${props => props.$active ? '#4ade80' : 'rgba(74, 222, 128, 0.3)'};
+    margin: 0 6px;
     cursor: pointer;
-
+    transition: all 0.3s ease;
+    
     &:hover {
         transform: scale(1.2);
+        background-color: ${props => props.$active ? '#4ade80' : 'rgba(74, 222, 128, 0.5)'};
     }
 `;
 
@@ -553,7 +555,7 @@ function Features() {
                                 initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
                                 animate={{ scale: 1, opacity: 1, rotate: 0 }}
                                 transition={{ duration: 0.3, delay: 0.1 }}
-                                bgColor={features[currentIndex].bgColor}
+                                $bgColor={features[currentIndex].bgColor}
                                 whileHover={{ scale: 1.05, rotate: 5 }}
                             >
                                 {!imageLoaded[currentIndex] && <ImageSkeleton />}
@@ -616,7 +618,7 @@ function Features() {
                         {features.map((_, index) => (
                             <ProgressDot 
                                 key={index}
-                                active={index === currentIndex}
+                                $active={index === currentIndex}
                                 onClick={() => goToSlide(index)}
                             />
                         ))}
