@@ -5,12 +5,19 @@ import {Link as ScrollLink} from 'react-scroll'
 import { useNavigate } from "react-router-dom";
 import Alert from "../common/Alert";
 
-
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [alertVisible, setAlertVisible] = useState(false);
     const navigate = useNavigate();
-    const handleStartGameClick =()=>{
+    const handleStartGameClick = async () => {
+        await new Promise((resolve) => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            setTimeout(resolve, 500);
+        });
+
         if(window.innerWidth<=768){
             setIsMenuOpen(false);
             setAlertVisible(true);

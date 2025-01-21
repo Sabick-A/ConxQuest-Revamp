@@ -3,7 +3,7 @@ import "./Loader.css";
 function Loader() {
     return (
         <div className="loading-container z-20">
-            <h1 className="text-3xl">Building The World</h1>
+            <h1 className="text-3xl font-main">Building The World</h1>
             <div className="tree mt-10">
                 <div className="branch" style={{ "--x": "0" }}>
                     <span style={{ "--i": "0" }}></span>
@@ -37,7 +37,7 @@ function Loader() {
                 </div>
                 <span className="shadow"></span>
             </div>
-            <h1 className="text-3xl">Loading...</h1>
+            <h1 className="text-3xl font-game text-sm">Loading...</h1>
         </div>
     );
 }

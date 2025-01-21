@@ -1,5 +1,5 @@
 // canvasHelpers.js
-import { checkCollision } from "./"; // Adjust the import path as needed
+import { checkCollision } from "./"; 
 import {
     playerDownImage,
     playerUpImage,
@@ -152,7 +152,7 @@ export const updateGameLogic = (
     lastKey,
     movables
 ) => {
-    drawElements(context, [background,player]); // add foreground here
+    drawElements(context, [background,player,...boundaries]); // add foreground here
     const teleportActivated = checkTeleportation(
         context,
         player,

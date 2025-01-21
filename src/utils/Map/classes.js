@@ -45,8 +45,8 @@ class Boundary {
     }
 
     draw(c) {
-        c.fillStyle = "rgba(255, 0, 0, 0.08)";
-        c.fillRect(this.position.x, this.position.y, this.width, this.height);
+        // c.fillStyle = "rgba(255, 0, 0, 0.4)";
+        // c.fillRect(this.position.x, this.position.y, this.width, this.height);
     }
 }
 
