@@ -88,7 +88,8 @@ const checkInteraction = (context, player, interacts, keys) => {
                 location.href = '/cardgame';
             } else if (inter.val == 2) {
                 console.log("redirecting to quizGame");
-                location.href = '/quizgame';
+                const botpress = window.botpress;
+                botpress.open();
             } else if(inter.val==3){
                 console.log("redirecting to situation game");
                 location.href= '/situationgame';
@@ -160,6 +161,12 @@ export const updateGameLogic = (
         keys
     );
     
+    const interactionActivated= checkInteraction(
+        context,
+        player,
+        interacts,
+        keys
+    );
     updatePlayerMovement(keys, lastKey, boundaries, player, movables);
-    return teleportActivated;
+    return teleportActivated || interactionActivated;
 };

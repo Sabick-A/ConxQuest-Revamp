@@ -24,3 +24,10 @@ html {
     width: 0px;
     background: transparent;
 }
+
+iframe {
+    position: absolute;
+    height: 100%, !important;
+    width: 100% !important;
+    transform: translateX(-500px);
+}

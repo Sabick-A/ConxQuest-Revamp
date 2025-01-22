@@ -61,6 +61,10 @@ function Canvas() {
         // Add event listeners
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
+        
+        window.botpress?.on('webchat:closed', () => {
+            requestAnimationFrame(animate);
+        });
 
         const movables = [
             background,
