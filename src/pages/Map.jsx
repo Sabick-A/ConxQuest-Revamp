@@ -45,6 +45,16 @@ function Canvas() {
     const handleKeyUp = useCallback((e) => handleKey(e, false), [handleKey]);
 
     useEffect(() => {
+        // Set background color when component mounts
+        document.body.style.backgroundColor = '#2A7299';
+        
+        // Cleanup function to reset background color when component unmounts
+        return () => {
+            document.body.style.backgroundColor = 'rgb(5 46 22)';
+        };
+    }, []);
+
+    useEffect(() => {
         const canvas = canvasRef.current;
         contextRef.current = canvas.getContext("2d");
         canvas.width = window.innerWidth;

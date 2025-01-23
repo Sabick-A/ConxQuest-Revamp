@@ -1,5 +1,5 @@
 import foregroundObjects from "./foregroundObjects.png";
-import mapImage from "./map.png";
+import mapImage from "./SIH.png";
 import playerDown from "./playerDown.png";
 import playerLeft from "./playerLeft.png";
 import playerRight from "./playerRight.png";

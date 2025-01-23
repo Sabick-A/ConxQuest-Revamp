@@ -153,7 +153,7 @@ export const updateGameLogic = (
     lastKey,
     movables
 ) => {
-    drawElements(context, [background,player,...boundaries]); // add foreground here
+    drawElements(context, [background,player,foreground]); // add foreground here
     const teleportActivated = checkTeleportation(
         context,
         player,
