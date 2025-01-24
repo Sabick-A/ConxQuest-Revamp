@@ -33,6 +33,14 @@
             transparent
         );
     background-size: 55px 55px;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+}
+
+.loading-container.fade-out {
+    opacity: 0;
+    visibility: hidden;
 }
 
 .tree {

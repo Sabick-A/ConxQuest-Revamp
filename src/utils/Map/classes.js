@@ -6,9 +6,21 @@ class Sprite {
         this.width = width / this.frames.max;
         this.height = height;
         this.moving = false;
+        this.loaded = false;
+
+        // Handle image loading
+        if (this.image.complete) {
+            this.loaded = true;
+        } else {
+            this.image.onload = () => {
+                this.loaded = true;
+            };
+        }
     }
 
     draw(c) {
+        if (!this.loaded) return;
+        
         c.drawImage(
             this.image,
             this.frames.val * this.width,

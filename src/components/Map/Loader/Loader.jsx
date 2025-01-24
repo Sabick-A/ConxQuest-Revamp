@@ -1,8 +1,9 @@
 import React from "react";
 import "./Loader.css";
-function Loader() {
+
+function Loader({ fadeOut }) {
     return (
-        <div className="loading-container z-20">
+        <div className={`loading-container z-20 ${fadeOut ? 'fade-out' : ''}`}>
             <h1 className="text-3xl font-main">Building The World</h1>
             <div className="tree mt-10">
                 <div className="branch" style={{ "--x": "0" }}>

@@ -13,9 +13,12 @@ import StartInfo from "../components/Map/StartInfo";
 
 function Canvas() {
     const [loading, setLoading] = useState(true);
+    const [fadeOut, setFadeOut] = useState(false);
     const [xButton, setXButton] = useState(false);
     const [showStartInfo,setShowStartInfo]=useState(true);
     const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
+    const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [minLoadingComplete, setMinLoadingComplete] = useState(false);
     const navigate = useNavigate();
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
@@ -29,28 +32,70 @@ function Canvas() {
     });
     const animationIdRef = useRef();
 
-    // Unified event handler for both keydown and keyup
-    const handleKey = useCallback((e, isPressed) => {
+    const cleanupAndNavigate = useCallback(() => {
+        // Cancel the animation frame immediately
+        if (animationIdRef.current) {
+            window.cancelAnimationFrame(animationIdRef.current);
+        }
+        // Navigate after cleanup
+        navigate("/");
+    }, [navigate]);
+
+    const handleKeyDown = useCallback((e) => {
         const key = e.key.toLowerCase();
         if (keys.current[key] !== undefined) {
-            keys.current[key].pressed = isPressed;
-            if (isPressed && key !== "x") lastKey.current = key;
+            keys.current[key].pressed = true;
+            if (key !== "x") lastKey.current = key;
         }
-        if(isPressed && key==="h"){
-            navigate("/");
+        if(key === "h") {
+            cleanupAndNavigate();
+        }
+    }, [cleanupAndNavigate]);
+
+    const handleKeyUp = useCallback((e) => {
+        const key = e.key.toLowerCase();
+        if (keys.current[key] !== undefined) {
+            keys.current[key].pressed = false;
         }
     }, []);
-
-    const handleKeyDown = useCallback((e) => handleKey(e, true), [handleKey]);
-    const handleKeyUp = useCallback((e) => handleKey(e, false), [handleKey]);
 
     useEffect(() => {
         // Set background color when component mounts
         document.body.style.backgroundColor = '#2A7299';
         
-        // Cleanup function to reset background color when component unmounts
+        // Load Botpress scripts
+        const injectScript = document.createElement('script');
+        injectScript.src = 'https://cdn.botpress.cloud/webchat/v2.1/inject.js';
+        injectScript.id = 'botpress-inject-script';
+
+        const configScript = document.createElement('script');
+        configScript.src = 'https://mediafiles.botpress.cloud/fb82c3c2-66cb-4282-86a2-ddafece5c8eb/webchat/v2.1/config.js';
+        configScript.id = 'botpress-config-script';
+
+        // Add scripts to head
+        document.head.appendChild(injectScript);
+        injectScript.onload = () => {
+            document.head.appendChild(configScript);
+        };
+        
+        // Cleanup function to reset background color and remove scripts when component unmounts
         return () => {
             document.body.style.backgroundColor = 'rgb(5 46 22)';
+            
+            // Remove Botpress scripts
+            const injectScriptElement = document.getElementById('botpress-inject-script');
+            const configScriptElement = document.getElementById('botpress-config-script');
+            
+            if (injectScriptElement) {
+                injectScriptElement.remove();
+            }
+            if (configScriptElement) {
+                configScriptElement.remove();
+            }
+
+            // Clean up any Botpress elements from the DOM
+            const botpressElements = document.querySelectorAll('[class*="bp"]');
+            botpressElements.forEach(element => element.remove());
         };
     }, []);
 
@@ -60,6 +105,11 @@ function Canvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
+        // Set minimum loading time of 2 seconds
+        setTimeout(() => {
+            setMinLoadingComplete(true);
+        }, 1000);
+
         const offset = {
             x: -900 + (canvas.width - 1024) / 2,
             y: -2800 + (canvas.height - 576) / 2,
@@ -67,6 +117,30 @@ function Canvas() {
 
         const { teleports, boundaries, interacts } = initiVectors(offset);
         const { background, player, foreground } = initSprites(canvas, offset);
+
+        // Track image loading
+        const imagesToLoad = [background.image, player.image, foreground.image];
+        let loadedImages = 0;
+
+        const handleImageLoad = () => {
+            loadedImages++;
+            if (loadedImages === imagesToLoad.length) {
+                setImagesLoaded(true);
+            }
+        };
+
+        // Add load event listeners to all images
+        imagesToLoad.forEach(img => {
+            if (img.complete) {
+                handleImageLoad();
+            } else {
+                img.addEventListener('load', handleImageLoad);
+            }
+            // Clean up image load listeners
+            img.addEventListener('load', () => {
+                img.removeEventListener('load', handleImageLoad);
+            }, { once: true });
+        });
 
         // Add event listeners
         window.addEventListener("keydown", handleKeyDown);
@@ -114,9 +188,6 @@ function Canvas() {
         };
 
         animate();
-        setTimeout(() => {
-            setLoading(false);
-        }, 4000);
 
         const handleResize = () => {
             canvas.width = window.innerWidth;
@@ -134,6 +205,16 @@ function Canvas() {
     }, [handleKeyDown, handleKeyUp]);
 
     useEffect(() => {
+        if (imagesLoaded && minLoadingComplete) {
+            setFadeOut(true);
+            // Wait for fadeout animation to complete before removing loader
+            setTimeout(() => {
+                setLoading(false);
+            }, 200); // Match this with CSS transition duration
+        }
+    }, [imagesLoaded, minLoadingComplete]);
+
+    useEffect(() => {
         const handleKeyPress = () => {
             setShowStartInfo(false);
         };
@@ -147,7 +228,7 @@ function Canvas() {
 
     return (
         <>
-            {loading && <Loader />}
+            {loading && <Loader fadeOut={fadeOut} />}
             {!loading && showStartInfo && <StartInfo/>}
             {!loading && <HomeBtn/>}
             <canvas ref={canvasRef}></canvas>
