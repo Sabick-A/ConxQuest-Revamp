@@ -38,7 +38,7 @@ function Loader({ fadeOut }) {
                 </div>
                 <span className="shadow"></span>
             </div>
-            <h1 className="text-3xl font-game text-sm">Loading...</h1>
+            <h1 className="font-game text-sm">Loading...</h1>
         </div>
     );
 }
