@@ -8,8 +8,8 @@ import {
 } from "../utils/Map";
 import Loader from "../components/Map/Loader/Loader";
 import XBtn from "../components/Map/XBtn";
-import HomeBtn from '../components/Map/HomeBtn'
 import StartInfo from "../components/Map/StartInfo";
+import Navbar from "../components/Map/Navbar";
 
 function Canvas() {
     const [loading, setLoading] = useState(true);
@@ -230,9 +230,10 @@ function Canvas() {
         <>
             {loading && <Loader fadeOut={fadeOut} />}
             {!loading && showStartInfo && <StartInfo/>}
-            {!loading && <HomeBtn/>}
+            {!loading && <Navbar/>}
             <canvas ref={canvasRef}></canvas>
             {xButton && <XBtn position={playerPosition} />}
+
         </>
     );
 }
