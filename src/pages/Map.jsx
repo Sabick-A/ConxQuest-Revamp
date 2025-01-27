@@ -117,8 +117,20 @@ function Canvas() {
 
         const { teleports, boundaries, interacts } = initiVectors(offset);
         const { background, player, foreground } = initSprites(canvas, offset);
+        
+        // Store game state
+        const gameState = {
+            isAnimating: true,
+            player: player,
+            background: background,
+            foreground: foreground,
+            boundaries: boundaries,
+            teleports: teleports,
+            interacts: interacts,
+            offset: offset
+        };
 
-        // Track image loading
+        // Add load event listeners to all images
         const imagesToLoad = [background.image, player.image, foreground.image];
         let loadedImages = 0;
 
@@ -129,14 +141,12 @@ function Canvas() {
             }
         };
 
-        // Add load event listeners to all images
         imagesToLoad.forEach(img => {
             if (img.complete) {
                 handleImageLoad();
             } else {
                 img.addEventListener('load', handleImageLoad);
             }
-            // Clean up image load listeners
             img.addEventListener('load', () => {
                 img.removeEventListener('load', handleImageLoad);
             }, { once: true });
@@ -146,9 +156,41 @@ function Canvas() {
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
         
-        window.botpress?.on('webchat:closed', () => {
-            requestAnimationFrame(animate);
-        });
+        // Setup Botpress webchat event listeners
+        const setupBotpressListener = () => {
+            if (window.botpress) {
+                // Handle bot open
+                window.onBotOpen = () => {
+                    console.log("Bot opened - pausing animation");
+                    gameState.isAnimating = false;
+                    if (animationIdRef.current) {
+                        window.cancelAnimationFrame(animationIdRef.current);
+                    }
+                };
+
+                // Handle bot close
+                window.botpress.on('webchat:closed', () => {
+                    console.log("Webchat closed - resuming animation");
+                    gameState.isAnimating = true;
+                    if (animationIdRef.current) {
+                        window.cancelAnimationFrame(animationIdRef.current);
+                    }
+                    requestAnimationFrame(() => animate(gameState));
+                });
+            }
+        };
+
+        // Check if Botpress is already loaded
+        if (window.botpress) {
+            setupBotpressListener();
+        } else {
+            const botpressCheckInterval = setInterval(() => {
+                if (window.botpress) {
+                    setupBotpressListener();
+                    clearInterval(botpressCheckInterval);
+                }
+            }, 100);
+        }
 
         const movables = [
             background,
@@ -158,36 +200,41 @@ function Canvas() {
             ...interacts,
         ];
 
-        const animate = () => {
+        const animate = (state) => {
+            if (!state.isAnimating) return;
+            
             contextRef.current.clearRect(0, 0, canvas.width, canvas.height);
             const teleportActivated = updateGameLogic(
                 contextRef.current,
-                player,
-                background,
-                foreground,
-                boundaries,
-                teleports,
-                interacts,
+                state.player,
+                state.background,
+                state.foreground,
+                state.boundaries,
+                state.teleports,
+                state.interacts,
                 keys.current,
                 lastKey.current,
                 movables
             );
+            
             if (!teleportActivated) {
-                animationIdRef.current = window.requestAnimationFrame(animate);
+                animationIdRef.current = window.requestAnimationFrame(() => animate(state));
             }
+            
             const xButtonActivated = checkXButtonStatus(
-                player,
-                teleports,
-                interacts
+                state.player,
+                state.teleports,
+                state.interacts
             );
             setXButton(xButtonActivated);
             setPlayerPosition({
-                x: player.position.x + player.width / 8, // Center horizontally (width/4/2)
-                y: player.position.y + player.height / 2, // Center vertically
+                x: state.player.position.x + state.player.width / 8,
+                y: state.player.position.y + state.player.height / 2,
             });
         };
 
-        animate();
+        // Start initial animation
+        animate(gameState);
 
         const handleResize = () => {
             canvas.width = window.innerWidth;

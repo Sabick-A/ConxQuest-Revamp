@@ -87,8 +87,11 @@ const checkInteraction = (context, player, interacts, keys) => {
                 console.log("redirecting to cardGame");
                 location.href = '/cardgame';
             } else if (inter.val == 2) {
-                console.log("redirecting to quizGame");
                 const botpress = window.botpress;
+                // Pause the game state before opening bot
+                if (window.onBotOpen) {
+                    window.onBotOpen();
+                }
                 botpress.open();
             } else if(inter.val==3){
                 console.log("redirecting to situation game");

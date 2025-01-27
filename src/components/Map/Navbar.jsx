@@ -6,9 +6,9 @@ import ProgressBar from './ProgressBar'
 function Navbar() {
   return (
     <>
-        {/* <HomeBtn/> */}
+        <HomeBtn/>
         <ProgressBar progress={40}/>
-        {/* <InfoBtn/> */}
+        <InfoBtn/>
     </>
   )
 }
