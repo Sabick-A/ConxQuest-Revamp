@@ -89,6 +89,7 @@ const checkInteraction = (context, player, interacts, keys) => {
             } else if (inter.val == 2) {
                 const botpress = window.botpress;
                 // Pause the game state before opening bot
+                //bot started
                 if (window.onBotOpen) {
                     window.onBotOpen();
                 }

@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
 import {
     initSprites,
     initiVectors,
     updateGameLogic,
     checkXButtonStatus,
 } from "../utils/Map";
+import { useKeyboard } from "../hooks/useKeyboard";
 import Loader from "../components/Map/Loader/Loader";
 import XBtn from "../components/Map/XBtn";
 import StartInfo from "../components/Map/StartInfo";
@@ -19,45 +19,10 @@ function Canvas() {
     const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [minLoadingComplete, setMinLoadingComplete] = useState(false);
-    const navigate = useNavigate();
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
-    const lastKey = useRef("");
-    const keys = useRef({
-        w: { pressed: false },
-        a: { pressed: false },
-        s: { pressed: false },
-        d: { pressed: false },
-        x: { pressed: false },
-    });
-    const animationIdRef = useRef();
 
-    const cleanupAndNavigate = useCallback(() => {
-        // Cancel the animation frame immediately
-        if (animationIdRef.current) {
-            window.cancelAnimationFrame(animationIdRef.current);
-        }
-        // Navigate after cleanup
-        navigate("/");
-    }, [navigate]);
-
-    const handleKeyDown = useCallback((e) => {
-        const key = e.key.toLowerCase();
-        if (keys.current[key] !== undefined) {
-            keys.current[key].pressed = true;
-            if (key !== "x") lastKey.current = key;
-        }
-        if(key === "h") {
-            cleanupAndNavigate();
-        }
-    }, [cleanupAndNavigate]);
-
-    const handleKeyUp = useCallback((e) => {
-        const key = e.key.toLowerCase();
-        if (keys.current[key] !== undefined) {
-            keys.current[key].pressed = false;
-        }
-    }, []);
+    const { keys, lastKey, handleKeyDown, handleKeyUp, animationIdRef } = useKeyboard();
 
     useEffect(() => {
         // Set background color when component mounts
