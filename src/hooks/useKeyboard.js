@@ -10,6 +10,8 @@ export const useKeyboard = () => {
         s: { pressed: false },
         d: { pressed: false },
         x: { pressed: false },
+        Escape: { pressed: false },
+        c: { pressed: false }
     });
     const animationIdRef = useRef();
 
@@ -21,20 +23,20 @@ export const useKeyboard = () => {
     }, [navigate]);
 
     const handleKeyDown = useCallback((e) => {
-        const key = e.key.toLowerCase();
+        const key = e.key;
         if (keys.current[key] !== undefined) {
             keys.current[key].pressed = true;
-            if (key !== "x") {
+            if (key !== "x" && key !== "Escape") {
                 lastKey.current = key;
             }
         }
-        if(key === "h") {
+        if(key === "Escape") {
             cleanupAndNavigate();
         }
     }, [cleanupAndNavigate]);
 
     const handleKeyUp = useCallback((e) => {
-        const key = e.key.toLowerCase();
+        const key = e.key;
         if (keys.current[key] !== undefined) {
             keys.current[key].pressed = false;
         }

@@ -1,5 +1,4 @@
 import React from "react";
-import HomeBtn from "./HomeBtn";
 import InfoBtn from "./InfoBtn";
 import ProgressBar from "./ProgressBar";
 import logo2 from "../../assets/images/common/logo2.png";

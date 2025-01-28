@@ -119,6 +119,8 @@ export function checkXButtonStatus(player,teleports,interacts){
     movables
 ) => {
     player.moving = false;
+    if (!lastKey || !directions[lastKey]) return;
+    
     if (keys[lastKey]?.pressed) {
         player.moving = true;
         const { axis, delta, image, offset } = directions[lastKey];

@@ -8,17 +8,17 @@ import {
 import { useKeyboard } from "../hooks/useKeyboard";
 import Loader from "../components/Map/Loader/Loader";
 import XBtn from "../components/Map/XBtn";
-import StartInfo from "../components/Map/StartInfo";
 import Navbar from "../components/Map/Navbar";
+import Controls from "../components/Map/Controls";
 
 function Canvas() {
     const [loading, setLoading] = useState(true);
     const [fadeOut, setFadeOut] = useState(false);
     const [xButton, setXButton] = useState(false);
-    const [showStartInfo,setShowStartInfo]=useState(true);
     const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [minLoadingComplete, setMinLoadingComplete] = useState(false);
+    const [showControls, setShowControls] = useState(true);
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
 
@@ -166,7 +166,7 @@ function Canvas() {
         ];
 
         const animate = (state) => {
-            if (!state.isAnimating) return;
+            if (!state.isAnimating ) return;
             
             contextRef.current.clearRect(0, 0, canvas.width, canvas.height);
             const teleportActivated = updateGameLogic(
@@ -226,26 +226,37 @@ function Canvas() {
         }
     }, [imagesLoaded, minLoadingComplete]);
 
+
     useEffect(() => {
-        const handleKeyPress = () => {
-            setShowStartInfo(false);
+        const checkMenuKey = () => {
+            if (keys.current.c.pressed) {
+                keys.current.c.pressed = false; // Reset to prevent multiple toggles
+                setShowControls(true);
+            }
+            requestAnimationFrame(checkMenuKey);
+        };
+        const animationId = requestAnimationFrame(checkMenuKey);
+        return () => cancelAnimationFrame(animationId);
+    }, [keys]);
+
+    useEffect(() => {
+        const handleInitialKeyPress = (e) => {
+            setShowControls(false);
+            // Remove the event listener after first key press
+            window.removeEventListener('keydown', handleInitialKeyPress);
         };
 
-        window.addEventListener("keydown", handleKeyPress);
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyPress);
-        };
+        window.addEventListener('keydown', handleInitialKeyPress);
+        return () => window.removeEventListener('keydown', handleInitialKeyPress);
     }, []);
 
     return (
         <>
             {loading && <Loader fadeOut={fadeOut} />}
-            {!loading && showStartInfo && <StartInfo/>}
-            {!loading && <Navbar/>}
-            <canvas ref={canvasRef}></canvas>
+            <canvas ref={canvasRef} />
             {xButton && <XBtn position={playerPosition} />}
-
+            {!loading && <Navbar />}
+            {!loading && showControls && <Controls onClose={() => setShowControls(false)} />}
         </>
     );
 }
