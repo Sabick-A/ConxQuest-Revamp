@@ -37,7 +37,7 @@ const directions = {
     },
 };
 
- const drawElements = (context, elements) => {
+ export const drawElements = (context, elements) => {
     elements.forEach((element) => element.draw(context));
 };
 
@@ -81,18 +81,12 @@ const checkInteraction = (context, player, interacts, keys) => {
             checkCollision({ rectangle1: player, rectangle2: inter }) &&
             keys.x.pressed
         ) {
-            console.log("interaction activated");
             interactionActivated = true;
             if (inter.val == 1) {
                 console.log("redirecting to cardGame");
                 location.href = '/cardgame';
             } else if (inter.val == 2) {
                 const botpress = window.botpress;
-                // Pause the game state before opening bot
-                //bot started
-                if (window.onBotOpen) {
-                    window.onBotOpen();
-                }
                 botpress.open();
             } else if(inter.val==3){
                 console.log("redirecting to situation game");
@@ -167,12 +161,12 @@ export const updateGameLogic = (
         keys
     );
     
-    const interactionActivated= checkInteraction(
+    checkInteraction(
         context,
         player,
         interacts,
         keys
     );
     updatePlayerMovement(keys, lastKey, boundaries, player, movables);
-    return teleportActivated || interactionActivated;
+    return teleportActivated;
 };
