@@ -11,7 +11,8 @@ export const useKeyboard = () => {
         d: { pressed: false },
         x: { pressed: false },
         Escape: { pressed: false },
-        c: { pressed: false }
+        c: { pressed: false },
+        tab: { pressed: false }
     });
     const animationIdRef = useRef();
 
@@ -23,22 +24,41 @@ export const useKeyboard = () => {
     }, [navigate]);
 
     const handleKeyDown = useCallback((e) => {
-        const key = e.key;
-        if (keys.current[key] !== undefined) {
-            keys.current[key].pressed = true;
-            if (key !== "x" && key !== "Escape") {
-                lastKey.current = key;
-            }
-        }
-        if(key === "Escape") {
-            cleanupAndNavigate();
+        e.preventDefault();
+        const key = e.key.toLowerCase();
+        switch (key) {
+            case "w":
+            case "a":
+            case "s":
+            case "d":
+            case "x":
+            case "h":
+            case "c":
+            case "tab":
+                keys.current[key].pressed = true;
+                if (key !== "x" && key !== "escape") {
+                    lastKey.current = key;
+                }
+                break;
+            case "escape":
+                cleanupAndNavigate();
+                break;
         }
     }, [cleanupAndNavigate]);
 
     const handleKeyUp = useCallback((e) => {
-        const key = e.key;
-        if (keys.current[key] !== undefined) {
-            keys.current[key].pressed = false;
+        const key = e.key.toLowerCase();
+        switch (key) {
+            case "w":
+            case "a":
+            case "s":
+            case "d":
+            case "x":
+            case "h":
+            case "c":
+            case "tab":
+                keys.current[key].pressed = false;
+                break;
         }
     }, []);
 

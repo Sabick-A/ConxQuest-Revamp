@@ -11,6 +11,7 @@ import Loader from "../components/Map/Loader/Loader";
 import XBtn from "../components/Map/XBtn";
 import Navbar from "../components/Map/Navbar";
 import Controls from "../components/Map/Controls";
+import MapView from "../components/Map/MapView";
 
 function Canvas() {
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,7 @@ function Canvas() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [minLoadingComplete, setMinLoadingComplete] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [showMap, setShowMap] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
 
@@ -300,14 +302,18 @@ function Canvas() {
   }, [imagesLoaded, minLoadingComplete]);
 
   useEffect(() => {
-    const checkMenuKey = () => {
+    const checkKeys = () => {
       if (keys.current.c.pressed) {
-        keys.current.c.pressed = false; // Reset to prevent multiple toggles
+        keys.current.c.pressed = false;
         setShowControls(true);
       }
-      requestAnimationFrame(checkMenuKey);
+      if (keys.current.tab && keys.current.tab.pressed) {
+        keys.current.tab.pressed = false;
+        setShowMap(true);
+      }
+      requestAnimationFrame(checkKeys);
     };
-    const animationId = requestAnimationFrame(checkMenuKey);
+    const animationId = requestAnimationFrame(checkKeys);
     return () => cancelAnimationFrame(animationId);
   }, [keys]);
 
@@ -335,6 +341,12 @@ function Canvas() {
       {xButton && memoizedXBtn}
       {!loading && <Navbar />}
       {!loading && showControls && memoizedControls}
+      {!loading && showMap && (
+        <MapView 
+          onClose={() => setShowMap(false)} 
+          playerPosition={playerPosition}
+        />
+      )}
     </>
   );
 }

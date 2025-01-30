@@ -5,7 +5,7 @@ function Alert({setVisible}) {
     <div className="z-50 h-screen w-full flex items-center justify-center bg-whitesmoke opacity-90">
       <div
         id="alert-additional-content-2"
-        className="p-4 mb-4 mx-10 text-red-800 border border-red-300 rounded-lg bg-red-100 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 z-200"
+        className="p-4 mb-4 mx-10 text-red-800 border border-red-300 rounded-lg bg-red-100"
         role="alert"
       >
         <div className="flex items-center">
@@ -32,7 +32,7 @@ function Alert({setVisible}) {
           <button
             onClick={() => setVisible(false)}
             type="button"
-            className="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:hover:bg-red-600 dark:border-red-600 dark:text-red-500 dark:hover:text-white dark:focus:ring-red-800"
+            className="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center "
             data-dismiss-target="#alert-additional-content-2"
             aria-label="Close"
           >

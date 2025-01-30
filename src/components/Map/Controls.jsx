@@ -41,7 +41,7 @@ const Controls = ({ onClose }) => {
         {
             keys: 'X',
             action: 'Interact',
-            description: 'Talk to NPCs, use objects'
+            description: 'Talk to NPCs, use objects , enter games'
         },
         {
             keys: 'ESC',
@@ -54,9 +54,9 @@ const Controls = ({ onClose }) => {
             description: 'View world map'
         },
         {
-            keys: 'B',
-            action: 'Catalog',
-            description: 'Browse items and resources'
+            keys: 'G',
+            action: 'Guide',
+            description: 'View buildings/objects and their purposes.'
         },
         {
             keys: 'C',
