@@ -1,24 +1,19 @@
-import Hero from "./components/Home/Hero";
-import Navbar from "./components/Home/Navbar";
 import { Outlet } from "react-router-dom";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import { Suspense } from "react";
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
     return (
         <ErrorBoundary>
-            <div className="w-full min-h-screen flex flex-col">
-                <Suspense fallback={
-                    <div className="w-full h-screen flex items-center justify-center relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-green-900 to-green-950"></div>
-                        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-green-500"></div>
-                    </div>
-                }>
-                    <main className="flex-grow">
-                        <Outlet />
-                    </main>
-                </Suspense>
-            </div>
+            <SpeedInsights />
+            <Analytics />
+            <Suspense fallback={<div>Loading...</div>}>
+                <main className="min-h-screen">
+                    <Outlet />
+                </main>
+            </Suspense>
         </ErrorBoundary>
     );
 }
