@@ -83,8 +83,7 @@ const checkInteraction = (context, player, interacts, keys) => {
         ) {
             interactionActivated = true;
             if (inter.val == 1) {
-                console.log("redirecting to cardGame");
-                location.href = '/cardgame';
+                window.dispatchEvent(new CustomEvent('openKnowledgeBook'));
             } else if (inter.val == 2) {
                 const botpress = window.botpress;
                 botpress.open();

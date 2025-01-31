@@ -13,6 +13,7 @@ import Navbar from "../components/Map/Navbar";
 import Controls from "../components/Map/Controls";
 import MapView from "../components/Map/MapView";
 import Guide from "../components/Map/Guide";
+import KnowledgeBook from "../components/Map/KnowledgeBook";
 
 function Canvas() {
   const [loading, setLoading] = useState(true);
@@ -24,15 +25,122 @@ function Canvas() {
   const [showControls, setShowControls] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
+  const [showKnowledgeBook, setShowKnowledgeBook] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
+  const gameStateRef = useRef(null);
 
   const { keys, lastKey, handleKeyDown, handleKeyUp, animationIdRef } =
     useKeyboard();
 
+  const animate = useCallback((state) => {
+    if (!state || !state.isAnimating || !contextRef.current || !canvasRef.current) return;
+
+    contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    
+    const movables = [
+      state.background,
+      ...state.boundaries,
+      state.foreground,
+      ...state.teleports,
+      ...state.interacts,
+    ];
+
+    const teleportActivated = updateGameLogic(
+      contextRef.current,
+      state.player,
+      state.background,
+      state.foreground,
+      state.boundaries,
+      state.teleports,
+      state.interacts,
+      keys.current,
+      lastKey.current,
+      movables
+    );
+
+    if (!teleportActivated && state.isAnimating) {
+      animationIdRef.current = window.requestAnimationFrame(() => animate(state));
+    }
+
+    const xButtonActivated = checkXButtonStatus(
+      state.player,
+      state.teleports,
+      state.interacts
+    );
+    setXButton(xButtonActivated);
+    setPlayerPosition({
+      x: state.player.position.x + state.player.width / 8,
+      y: state.player.position.y + state.player.height / 2,
+    });
+  }, []);
+
+  const PauseAnimation = useCallback(() => {
+    if (!contextRef.current || !canvasRef.current || !gameStateRef.current) return;
+    
+    gameStateRef.current.isAnimating = false;
+    if (animationIdRef.current) {
+      window.cancelAnimationFrame(animationIdRef.current);
+      animationIdRef.current = null;
+    }
+
+    // Do one final render before stopping
+    contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    if (gameStateRef.current.background && gameStateRef.current.player && gameStateRef.current.foreground) {
+      drawElements(contextRef.current, [
+        gameStateRef.current.background,
+        gameStateRef.current.player,
+        gameStateRef.current.foreground
+      ]);
+    }
+  }, []);
+
+  const ResumeAnimation = useCallback(() => {
+    if (!gameStateRef.current || !contextRef.current || !canvasRef.current) return;
+    
+    if (!gameStateRef.current.isAnimating) {
+      gameStateRef.current.isAnimating = true;
+      if (animationIdRef.current) {
+        window.cancelAnimationFrame(animationIdRef.current);
+        animationIdRef.current = null;
+      }
+      animationIdRef.current = requestAnimationFrame(() => animate(gameStateRef.current));
+    }
+  }, [animate]);
+
+  const handleKnowledgeBookClose = useCallback(() => {
+    setShowKnowledgeBook(false);
+    ResumeAnimation();
+  }, [ResumeAnimation]);
+
+  const handleKnowledgeBookOpen = useCallback(() => {
+    setShowKnowledgeBook(true);
+    PauseAnimation();
+  }, [PauseAnimation]);
+
   useEffect(() => {
     // Set background color when component mounts
     document.body.style.backgroundColor = "#2A7299";
+
+    // Request full screen
+    const requestFullScreen = async () => {
+      try {
+        const element = document.documentElement;
+        if (element.requestFullscreen) {
+          await element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) { // Firefox
+          await element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) { // Chrome, Safari & Opera
+          await element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) { // IE/Edge
+          await element.msRequestFullscreen();
+        }
+      } catch (error) {
+        console.log("Fullscreen request failed:", error);
+      }
+    };
+
+    requestFullScreen();
 
     // Load Botpress scripts
     const injectScript = document.createElement("script");
@@ -50,30 +158,27 @@ function Canvas() {
       document.head.appendChild(configScript);
     };
 
-    // Cleanup function to reset background color and remove scripts when component unmounts
+    // Add knowledge book event listener
+    const handleKnowledgeBook = () => handleKnowledgeBookOpen();
+    window.addEventListener('openKnowledgeBook', handleKnowledgeBook);
+
+    // Cleanup function
     return () => {
       document.body.style.backgroundColor = "rgb(5 46 22)";
-
+      window.removeEventListener('openKnowledgeBook', handleKnowledgeBook);
+      
       // Remove Botpress scripts
-      const injectScriptElement = document.getElementById(
-        "botpress-inject-script"
-      );
-      const configScriptElement = document.getElementById(
-        "botpress-config-script"
-      );
+      const injectScriptElement = document.getElementById("botpress-inject-script");
+      const configScriptElement = document.getElementById("botpress-config-script");
 
-      if (injectScriptElement) {
-        injectScriptElement.remove();
-      }
-      if (configScriptElement) {
-        configScriptElement.remove();
-      }
+      if (injectScriptElement) injectScriptElement.remove();
+      if (configScriptElement) configScriptElement.remove();
 
-      // Clean up any Botpress elements from the DOM
+      // Clean up Botpress elements
       const botpressElements = document.querySelectorAll('[class*="bp"]');
       botpressElements.forEach((element) => element.remove());
     };
-  }, []);
+  }, [handleKnowledgeBookOpen]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -95,7 +200,7 @@ function Canvas() {
     const { background, player, foreground } = initSprites(canvas, offset);
 
     // Store game state
-    const gameState = {
+    gameStateRef.current = {
       isAnimating: true,
       player: player,
       background: background,
@@ -180,7 +285,7 @@ function Canvas() {
 
             // Set initial game state based on bot state
             if (initialState === "bpOpen") {
-              gameState.isAnimating = false;
+              gameStateRef.current.isAnimating = false;
               if (animationIdRef.current) {
                 window.cancelAnimationFrame(animationIdRef.current);
               }
@@ -211,76 +316,15 @@ function Canvas() {
       }, 100);
     }
 
-    const movables = [
-      background,
-      ...boundaries,
-      foreground,
-      ...teleports,
-      ...interacts,
-    ];
-
-    const animate = (state) => {
-      if (!state.isAnimating) return;
-
-      contextRef.current.clearRect(0, 0, canvas.width, canvas.height);
-      const teleportActivated = updateGameLogic(
-        contextRef.current,
-        state.player,
-        state.background,
-        state.foreground,
-        state.boundaries,
-        state.teleports,
-        state.interacts,
-        keys.current,
-        lastKey.current,
-        movables
-      );
-
-      if (!teleportActivated) {
-        animationIdRef.current = window.requestAnimationFrame(() =>
-          animate(state)
-        );
-      }
-
-      const xButtonActivated = checkXButtonStatus(
-        state.player,
-        state.teleports,
-        state.interacts
-      );
-      setXButton(xButtonActivated);
-      setPlayerPosition({
-        x: state.player.position.x + state.player.width / 8,
-        y: state.player.position.y + state.player.height / 2,
-      });
-    };
-
     // Start initial animation
-    animate(gameState);
+    if (gameStateRef.current) {
+      gameStateRef.current.isAnimating = true;
+      animate(gameStateRef.current);
+    }
 
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-    };
-
-    const PauseAnimation = () => {
-      // Do one final render before stopping
-      contextRef.current.clearRect(0, 0, canvas.width, canvas.height);
-      drawElements(contextRef.current, [background, player, foreground]);
-      
-      gameState.isAnimating = false;
-      if (animationIdRef.current) {
-        window.cancelAnimationFrame(animationIdRef.current);
-      }
-    };
-
-    const ResumeAnimation = () => {
-      if (!gameState.isAnimating) {
-        gameState.isAnimating = true;
-        if (animationIdRef.current) {
-          window.cancelAnimationFrame(animationIdRef.current);
-        }
-        requestAnimationFrame(() => animate(gameState));
-      }
     };
 
     window.addEventListener("resize", handleResize);
@@ -288,10 +332,13 @@ function Canvas() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      window.cancelAnimationFrame(animationIdRef.current);
+      if (animationIdRef.current) {
+        window.cancelAnimationFrame(animationIdRef.current);
+        animationIdRef.current = null;
+      }
       window.removeEventListener("resize", handleResize);
     };
-  }, [handleKeyDown, handleKeyUp]);
+  }, [animate]);
 
   useEffect(() => {
     if (imagesLoaded && minLoadingComplete) {
@@ -354,6 +401,11 @@ function Canvas() {
         />
       )}
       {showGuide && <Guide onClose={() => setShowGuide(false)} />}
+      {showKnowledgeBook && (
+        <KnowledgeBook 
+          onClose={handleKnowledgeBookClose}
+        />
+      )}
     </>
   );
 }

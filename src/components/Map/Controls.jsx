@@ -66,11 +66,11 @@ const Controls = ({ onClose }) => {
     ];
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0  backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-whitesmoke p-8 rounded-2xl w-[600px] relative border-2 border-green-700 shadow-[0_0_15px_rgba(34,197,94,0.3)]">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-green-700 border-opacity-30">
-                    <h2 className="text-2xl text-green-700 font-game tracking-wider">GAME CONTROLS</h2>
+                    <h2 className="text-xl text-green-700 font-game tracking-wider">GAME CONTROLS</h2>
                 </div>
 
                 {/* Controls Grid */}
