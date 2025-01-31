@@ -12,7 +12,8 @@ export const useKeyboard = () => {
         x: { pressed: false },
         Escape: { pressed: false },
         c: { pressed: false },
-        tab: { pressed: false }
+        tab: { pressed: false },
+        g: {pressed:false}
     });
     const animationIdRef = useRef();
 
@@ -35,6 +36,7 @@ export const useKeyboard = () => {
             case "h":
             case "c":
             case "tab":
+            case "g":
                 keys.current[key].pressed = true;
                 if (key !== "x" && key !== "escape") {
                     lastKey.current = key;
@@ -57,6 +59,7 @@ export const useKeyboard = () => {
             case "h":
             case "c":
             case "tab":
+            case "g":
                 keys.current[key].pressed = false;
                 break;
         }

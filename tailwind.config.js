@@ -17,7 +17,20 @@ export default {
       },
       fontFamily: {
         'main': ['"Rubik Bubbles"', 'serif'],
-        'game': ['"Press Start 2P"','serif'],
+        'game': ['"Press Start 2P"', 'sans-serif'],
+        'nerko': ['Nerko One', 'cursive'],
+      },
+      rotate: {
+        'y-180': '180deg',
+      },
+      transformStyle: {
+        'preserve-3d': 'preserve-3d',
+      },
+      backfaceVisibility: {
+        'hidden': 'hidden',
+      },
+      perspective: {
+        'DEFAULT': '1000px',
       },
       colors: {
         whitesmoke: 'whitesmoke',
@@ -26,4 +39,3 @@ export default {
   },
   plugins: [],
 }
-

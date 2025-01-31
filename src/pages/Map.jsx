@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import {
   initSprites,
   initiVectors,
@@ -12,6 +12,7 @@ import XBtn from "../components/Map/XBtn";
 import Navbar from "../components/Map/Navbar";
 import Controls from "../components/Map/Controls";
 import MapView from "../components/Map/MapView";
+import Guide from "../components/Map/Guide";
 
 function Canvas() {
   const [loading, setLoading] = useState(true);
@@ -20,8 +21,9 @@ function Canvas() {
   const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [minLoadingComplete, setMinLoadingComplete] = useState(false);
-  const [showControls, setShowControls] = useState(true);
+  const [showControls, setShowControls] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
 
@@ -311,6 +313,10 @@ function Canvas() {
         keys.current.tab.pressed = false;
         setShowMap(true);
       }
+      if (keys.current.g && keys.current.g.pressed) {
+        keys.current.g.pressed = false;
+        setShowGuide(true);
+      }
       requestAnimationFrame(checkKeys);
     };
     const animationId = requestAnimationFrame(checkKeys);
@@ -347,6 +353,7 @@ function Canvas() {
           playerPosition={playerPosition}
         />
       )}
+      {showGuide && <Guide onClose={() => setShowGuide(false)} />}
     </>
   );
 }
