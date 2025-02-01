@@ -193,7 +193,7 @@ function Hero() {
         <BackgroundContainer $image={backgroundImage} $loaded={imagesLoaded} id="home">
             { alertVisible && <Alert setVisible={setAlertVisible}/> }
             { messageVisible && <Message setVisible={setMessageVisible}/>}
-            <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 flex flex-col items-center -translate-y-1/2 z-10">
+            <div className="absolute top-[35%] left-1/2 transform -translate-x-1/2 flex flex-col items-center -translate-y-1/2 z-10">
                 <img 
                     src={logo} 
                     alt="Logo" 
