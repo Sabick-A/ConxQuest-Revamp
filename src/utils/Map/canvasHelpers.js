@@ -7,41 +7,42 @@ import {
     playerRightImage,
 } from "../../assets/images/Map";
 
+// Base speed in pixels per second
+const BASE_SPEED = 300; // Adjusted from 3 to 180 pixels per second
 
-const speed = 3;
 // Directions configuration
 const directions = {
     w: {
         axis: "y",
-        delta: speed,
+        delta: 1,
         image: playerUpImage,
-        offset: { x: 0, y: speed },
+        offset: { x: 0, y: 1 },
     },
     a: {
         axis: "x",
-        delta: speed,
+        delta: 1,
         image: playerLeftImage,
-        offset: { x: speed, y: 0 },
+        offset: { x: 1, y: 0 },
     },
     s: {
         axis: "y",
-        delta: -speed,
+        delta: -1,
         image: playerDownImage,
-        offset: { x: 0, y: -speed },
+        offset: { x: 0, y: -1 },
     },
     d: {
         axis: "x",
-        delta: -speed,
+        delta: -1,
         image: playerRightImage,
-        offset: { x: -speed, y: 0 },
+        offset: { x: -1, y: 0 },
     },
 };
 
- export const drawElements = (context, elements) => {
+export const drawElements = (context, elements) => {
     elements.forEach((element) => element.draw(context));
 };
 
- const checkTeleportation = (context, player, teleports, keys) => {
+const checkTeleportation = (context, player, teleports, keys) => {
     let teleportActivated = false;
     teleports.forEach((pad) => {
         if (
@@ -102,37 +103,39 @@ const checkInteraction = (context, player, interacts, keys) => {
     return interactionActivated;
 };
 
-
 export function checkXButtonStatus(player,teleports,interacts){
     const inTeleportZone = teleports.some(pad => checkCollision({ rectangle1: player, rectangle2: pad }));
     const inInteractZone = interacts.some(pad => checkCollision({ rectangle1: player, rectangle2: pad }));
     return (inTeleportZone || inInteractZone)
 }
 
-
- const updatePlayerMovement = (
+const updatePlayerMovement = (
     keys,
     lastKey,
     boundaries,
     player,
-    movables
+    movables,
+    deltaTime = 1/60 // Default to 60 FPS if not provided
 ) => {
     player.moving = false;
     if (!lastKey || !directions[lastKey]) return;
     
     if (keys[lastKey]?.pressed) {
         player.moving = true;
-        const { axis, delta, image, offset } = directions[lastKey];
-        player.image = image;
-        player.moving = true; // Set moving state to true
+        const direction = directions[lastKey];
+        player.image = direction.image;
+        
+        // Calculate frame-rate independent speed
+        const currentSpeed = BASE_SPEED * deltaTime;
+        
         const moving = !boundaries.some((boundary) =>
             checkCollision({
                 rectangle1: player,
                 rectangle2: {
                     ...boundary,
                     position: {
-                        x: boundary.position.x + offset.x,
-                        y: boundary.position.y + offset.y,
+                        x: boundary.position.x + direction.offset.x * currentSpeed,
+                        y: boundary.position.y + direction.offset.y * currentSpeed,
                     },
                 },
             })
@@ -140,7 +143,7 @@ export function checkXButtonStatus(player,teleports,interacts){
 
         if (moving) {
             movables.forEach((movable) => {
-                movable.position[axis] += delta;
+                movable.position[direction.axis] += direction.delta * currentSpeed;
             });
         }
     }
@@ -156,9 +159,10 @@ export const updateGameLogic = (
     interacts,
     keys,
     lastKey,
-    movables
+    movables,
+    deltaTime
 ) => {
-    drawElements(context, [background,player,foreground,]); // add foreground here
+    drawElements(context, [background,player,foreground,]);
     const teleportActivated = checkTeleportation(
         context,
         player,
@@ -172,6 +176,6 @@ export const updateGameLogic = (
         interacts,
         keys
     );
-    updatePlayerMovement(keys, lastKey, boundaries, player, movables);
+    updatePlayerMovement(keys, lastKey, boundaries, player, movables, deltaTime);
     return teleportActivated;
 };

@@ -18,7 +18,7 @@ export const initSprites = (canvas, offset) => {
         image: playerDownImage,
         frames: {
             max: 4,
-            hold: 7,
+            hold: 15,
         },
         width: 192,
         height: 68,

@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import Navbar from '../components/Home/Navbar'
 import Hero from '../components/Home/Hero'
 import About from '../components/Home/About'
@@ -9,11 +10,34 @@ import Footer from '../components/Home/Footer'
 import SplashCursor from '../components/common/SplashCursor'
 
 function Home() {
+  const [isLeaving, setIsLeaving] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Set dark green background when mounting Home
+    document.body.style.backgroundColor = "rgb(5, 46, 22)";
+    
+    return () => {
+      // Only change to blue if we're navigating to map
+      if (isLeaving) {
+        document.body.style.backgroundColor = "#2A7299";
+      }
+    };
+  }, [isLeaving]);
+
+  const handleStartGame = () => {
+    setIsLeaving(true);
+    setTimeout(() => {
+      navigate('/map');
+    }, 500); // Match this with CSS transition duration
+  };
+
   return (
-    <div className='min-h-screen'>
+    <div className={`min-h-screen transition-opacity duration-500 ${isLeaving ? 'opacity-0' : 'opacity-100'}`}>
       <SplashCursor/>
       <Navbar/>
-      <Hero/>
+      <Hero onStartGame={handleStartGame}/>
       <About/>
       <Features/>
       <HowToPlay/>

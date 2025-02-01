@@ -5,42 +5,54 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 100px;
-    --color: #e1e1e1;
-    background-color: #f3f3f3;
-    background-image: linear-gradient(
-            0deg,
-            transparent 24%,
-            var(--color) 25%,
-            var(--color) 26%,
-            transparent 27%,
-            transparent 74%,
-            var(--color) 75%,
-            var(--color) 76%,
-            transparent 77%,
-            transparent
-        ),
-        linear-gradient(
-            90deg,
-            transparent 24%,
-            var(--color) 25%,
-            var(--color) 26%,
-            transparent 27%,
-            transparent 74%,
-            var(--color) 75%,
-            var(--color) 76%,
-            transparent 77%,
-            transparent
-        );
-    background-size: 55px 55px;
-    opacity: 1;
+    gap: 80px;
+    background-color: rgb(5, 46, 22);
+    opacity: 0;
     visibility: visible;
-    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+    transition: all 0.5s ease-out;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.loading-container::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: radial-gradient(
+        circle at center,
+        rgba(74, 222, 128, 0.1) 0%,
+        transparent 50%
+    );
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-container.fade-out {
     opacity: 0;
     visibility: hidden;
+    transform: scale(1.05);
+    transition: all 0.5s ease-out;
 }
 
 .tree {
@@ -56,7 +68,6 @@
     0% {
         transform: rotateX(-20deg) rotateY(360deg);
     }
-
     100% {
         transform: rotateX(-20deg) rotateY(0deg);
     }
@@ -80,7 +91,7 @@
     height: 100%;
     background: linear-gradient(90deg, #69c069, #77dd77);
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    border-bottom: 5px solid #00000019;
+    border-bottom: 5px solid rgba(0, 0, 0, 0.1);
     transform-origin: bottom;
     transform: rotateY(calc(90deg * var(--i))) rotateX(30deg) translateZ(28.5px);
 }
@@ -88,12 +99,11 @@
 .tree div.stem span {
     position: absolute;
     top: 110px;
-    /* updated top value */
     left: calc(50% - 7.5px);
     width: 15px;
     height: 50%;
     background: linear-gradient(90deg, #bb4622, #df7214);
-    border-bottom: 5px solid #00000019;
+    border-bottom: 5px solid rgba(0, 0, 0, 0.1);
     transform-origin: bottom;
     transform: rotateY(calc(90deg * var(--i))) translateZ(7.5px);
 }
@@ -108,4 +118,8 @@
     filter: blur(20px);
     transform-style: preserve-3d;
     transform: rotateX(90deg) translateZ(-65px);
+}
+
+.clip-hexagon {
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
 }

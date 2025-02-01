@@ -19,6 +19,7 @@ import Dialog from "../components/Map/Dialog";
 function Canvas() {
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
+  const [fadeIn, setFadeIn] = useState(false);
   const [xButton, setXButton] = useState(false);
   const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -38,6 +39,10 @@ function Canvas() {
 
   const animate = useCallback((state) => {
     if (!state || !state.isAnimating || !contextRef.current || !canvasRef.current) return;
+
+    const currentTime = performance.now();
+    const deltaTime = (currentTime - (state.lastTime || currentTime)) / 1000; // Convert to seconds
+    state.lastTime = currentTime;
 
     contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     
@@ -59,23 +64,29 @@ function Canvas() {
       state.interacts,
       keys.current,
       lastKey.current,
-      movables
+      movables,
+      deltaTime
     );
 
     if (!teleportActivated && state.isAnimating) {
       animationIdRef.current = window.requestAnimationFrame(() => animate(state));
     }
 
-    const xButtonActivated = checkXButtonStatus(
-      state.player,
-      state.teleports,
-      state.interacts
-    );
-    setXButton(xButtonActivated);
-    setPlayerPosition({
-      x: state.player.position.x + state.player.width / 2,
-      y: state.player.position.y + state.player.height / 2,
-    });
+    // Throttle UI updates to reduce React state updates
+    const now = Date.now();
+    if (!state.lastUIUpdate || now - state.lastUIUpdate >= 50) { // Update UI at most every 50ms
+      const xButtonActivated = checkXButtonStatus(
+        state.player,
+        state.teleports,
+        state.interacts
+      );
+      setXButton(xButtonActivated);
+      setPlayerPosition({
+        x: state.player.position.x + state.player.width / 2,
+        y: state.player.position.y + state.player.height / 2,
+      });
+      state.lastUIUpdate = now;
+    }
   }, []);
 
   const PauseAnimation = useCallback(() => {
@@ -135,9 +146,26 @@ function Canvas() {
   }, [PauseAnimation]);
 
   useEffect(() => {
-    // Set background color when component mounts
-    document.body.style.backgroundColor = "#2A7299";
+    // Set initial background color to dark green during loading
+    document.body.style.backgroundColor = "rgb(5, 46, 22)";
+    
+    // Start fade in after a brief delay
+    setTimeout(() => {
+      setFadeIn(true);
+    }, 100);
 
+    // Change to blue only after loading is complete
+    if (!loading && !fadeOut) {
+      document.body.style.backgroundColor = "#2A7299";
+    }
+
+    // Cleanup: set back to dark green when unmounting
+    return () => {
+      document.body.style.backgroundColor = "rgb(5, 46, 22)";
+    };
+  }, [loading, fadeOut]);
+
+  useEffect(() => {
     // Request full screen
     const requestFullScreen = async () => {
       try {
@@ -187,7 +215,6 @@ function Canvas() {
 
     // Cleanup function
     return () => {
-      document.body.style.backgroundColor = "rgb(5 46 22)";
       window.removeEventListener('openKnowledgeBook', handleKnowledgeBook);
       window.removeEventListener('openDialog', handleDialog);
       
@@ -370,7 +397,9 @@ function Canvas() {
       // Wait for fadeout animation to complete before removing loader
       setTimeout(() => {
         setLoading(false);
-      }, 200); // Match this with CSS transition duration
+        // Change background color to blue after loader is gone
+        document.body.style.backgroundColor = "#2A7299";
+      }, 500);
     }
   }, [imagesLoaded, minLoadingComplete]);
 
@@ -412,10 +441,10 @@ function Canvas() {
   );
 
   return (
-    <>
+    <div className={`transition-opacity duration-500 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
       {loading && <Loader fadeOut={fadeOut} />}
       <canvas ref={canvasRef} />
-      {!showDialog &&!showKnowledgeBook && xButton && memoizedXBtn}
+      {!showDialog && !showKnowledgeBook && xButton && memoizedXBtn}
       {!loading && <Navbar />}
       {!loading && showControls && memoizedControls}
       {!loading && showMap && (
@@ -436,7 +465,7 @@ function Canvas() {
           onClose={handleDialogClose}
         />
       )}
-    </>
+    </div>
   );
 }
 
