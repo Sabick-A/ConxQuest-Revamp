@@ -5,7 +5,7 @@ import logo from "../../assets/images/common/logo.png";
 import { useNavigate } from "react-router-dom";
 import Alert from "../common/Alert";
 import Message from "../common/Message";
-
+import Magnet from "../common/Magnet";
 const StyledWrapper = styled.div`
     button {
         width: 280px;
@@ -199,11 +199,14 @@ function Hero() {
                     alt="Logo" 
                     className={`animate-bounce  md:mb-5 mb-12 transition-all duration-700 transform hover:scale-110 ${imagesLoaded ? 'opacity-100 filter drop-shadow-2xl' : 'opacity-0'}`}
                 />
+                <Magnet magnetStrength={5}>
                 <StyledWrapper>
                         <button onClick={handleStartGameClick} className="btn-shine">
                             <span>Start Game</span>
                         </button>
                 </StyledWrapper>
+                </Magnet>
+                
             </div>
             <ScrollButton 
                 onClick={scrollToAbout}

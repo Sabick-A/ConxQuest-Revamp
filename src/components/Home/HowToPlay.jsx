@@ -178,7 +178,6 @@ const Title = styled(motion.h1)`
     padding-top: 2rem;
     transform: translateY(20px);
     animation: titleAppear 0.8s ease-out forwards;
-    margin-bottom: 2rem;
     position: relative;
     z-index: 20;
     font-size: 3.5rem;
@@ -321,6 +320,7 @@ const Card = styled(motion.div)`
 
 const CardTitle = styled.h3`
     font-size: 1.5rem;
+    font-family: serif , sans-serif;
     color: #4ade80;
     margin-bottom: 0.5rem;
     font-weight: 600;
@@ -351,6 +351,7 @@ const CardsContainer = styled(motion.div)`
     gap: 2.5rem;
     width: 95%;
     max-width: 1400px;
+    max-height: 60vh;
     margin: 0 auto;
     position: relative;
     z-index: 20;

@@ -423,7 +423,7 @@ const CardsContainer = styled.div`
   margin-top: 4rem;
   perspective: 2500px;
   width: 100%;
-  min-height: 450px;
+  min-height: 200px;
   padding: 0 20px;
 `;
 
