@@ -82,14 +82,20 @@ const checkInteraction = (context, player, interacts, keys) => {
             keys.x.pressed
         ) {
             interactionActivated = true;
+            console.log('Interaction detected:', inter.val);
+            
             if (inter.val == 1) {
                 window.dispatchEvent(new CustomEvent('openKnowledgeBook'));
             } else if (inter.val == 2) {
                 const botpress = window.botpress;
                 botpress.open();
-            } else if(inter.val==3){
-                console.log("redirecting to situation game");
-                location.href= '/situationgame';
+            } else if (inter.val >= 5 && inter.val <= 20) {
+                // NPC dialog interactions (IDs 5-20 reserved for NPCs)
+                const npcId = inter.val - 4; // Convert 5 to 1, 6 to 2, etc.
+                console.log('Triggering dialog for NPC:', npcId);
+                window.dispatchEvent(new CustomEvent('openDialog', { 
+                    detail: { npcId } 
+                }));
             }
         }
     });
@@ -152,7 +158,7 @@ export const updateGameLogic = (
     lastKey,
     movables
 ) => {
-    drawElements(context, [background,player,foreground]); // add foreground here
+    drawElements(context, [background,player,foreground,]); // add foreground here
     const teleportActivated = checkTeleportation(
         context,
         player,

@@ -14,6 +14,7 @@ import Controls from "../components/Map/Controls";
 import MapView from "../components/Map/MapView";
 import Guide from "../components/Map/Guide";
 import KnowledgeBook from "../components/Map/KnowledgeBook";
+import Dialog from "../components/Map/Dialog";
 
 function Canvas() {
   const [loading, setLoading] = useState(true);
@@ -22,10 +23,12 @@ function Canvas() {
   const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [minLoadingComplete, setMinLoadingComplete] = useState(false);
-  const [showControls, setShowControls] = useState(false);
+  const [showControls, setShowControls] = useState(true);
   const [showMap, setShowMap] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [showKnowledgeBook, setShowKnowledgeBook] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [currentNpcId, setCurrentNpcId] = useState(null);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const gameStateRef = useRef(null);
@@ -70,7 +73,7 @@ function Canvas() {
     );
     setXButton(xButtonActivated);
     setPlayerPosition({
-      x: state.player.position.x + state.player.width / 8,
+      x: state.player.position.x + state.player.width / 2,
       y: state.player.position.y + state.player.height / 2,
     });
   }, []);
@@ -118,6 +121,19 @@ function Canvas() {
     PauseAnimation();
   }, [PauseAnimation]);
 
+  const handleDialogClose = useCallback(() => {
+    setShowDialog(false);
+    setCurrentNpcId(null);
+    ResumeAnimation();
+  }, [ResumeAnimation]);
+
+  const handleDialogOpen = useCallback((npcId) => {
+    console.log('Opening dialog for NPC:', npcId);
+    setCurrentNpcId(npcId);
+    setShowDialog(true);
+    PauseAnimation();
+  }, [PauseAnimation]);
+
   useEffect(() => {
     // Set background color when component mounts
     document.body.style.backgroundColor = "#2A7299";
@@ -162,10 +178,18 @@ function Canvas() {
     const handleKnowledgeBook = () => handleKnowledgeBookOpen();
     window.addEventListener('openKnowledgeBook', handleKnowledgeBook);
 
+    // Add dialog event listener
+    const handleDialog = (event) => {
+      const { npcId } = event.detail;
+      handleDialogOpen(npcId);
+    };
+    window.addEventListener('openDialog', handleDialog);
+
     // Cleanup function
     return () => {
       document.body.style.backgroundColor = "rgb(5 46 22)";
       window.removeEventListener('openKnowledgeBook', handleKnowledgeBook);
+      window.removeEventListener('openDialog', handleDialog);
       
       // Remove Botpress scripts
       const injectScriptElement = document.getElementById("botpress-inject-script");
@@ -178,7 +202,7 @@ function Canvas() {
       const botpressElements = document.querySelectorAll('[class*="bp"]');
       botpressElements.forEach((element) => element.remove());
     };
-  }, [handleKnowledgeBookOpen]);
+  }, [handleKnowledgeBookOpen, handleDialogOpen]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -391,7 +415,7 @@ function Canvas() {
     <>
       {loading && <Loader fadeOut={fadeOut} />}
       <canvas ref={canvasRef} />
-      {xButton && memoizedXBtn}
+      {!showDialog &&!showKnowledgeBook && xButton && memoizedXBtn}
       {!loading && <Navbar />}
       {!loading && showControls && memoizedControls}
       {!loading && showMap && (
@@ -404,6 +428,12 @@ function Canvas() {
       {showKnowledgeBook && (
         <KnowledgeBook 
           onClose={handleKnowledgeBookClose}
+        />
+      )}
+      {showDialog && (
+        <Dialog
+          npcId={currentNpcId}
+          onClose={handleDialogClose}
         />
       )}
     </>

@@ -44,7 +44,7 @@ const Controls = ({ onClose }) => {
             description: 'Talk to NPCs, use objects , enter games'
         },
         {
-            keys: 'ESC',
+            keys: 'H',
             action: 'Home',
             description: 'Return to main menu'
         },

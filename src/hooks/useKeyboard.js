@@ -10,7 +10,7 @@ export const useKeyboard = () => {
         s: { pressed: false },
         d: { pressed: false },
         x: { pressed: false },
-        Escape: { pressed: false },
+        h: { pressed: false },
         c: { pressed: false },
         tab: { pressed: false },
         g: {pressed:false}
@@ -33,7 +33,6 @@ export const useKeyboard = () => {
             case "s":
             case "d":
             case "x":
-            case "h":
             case "c":
             case "tab":
             case "g":
@@ -42,7 +41,7 @@ export const useKeyboard = () => {
                     lastKey.current = key;
                 }
                 break;
-            case "escape":
+            case "h":
                 cleanupAndNavigate();
                 break;
         }
