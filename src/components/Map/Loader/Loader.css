@@ -9,13 +9,13 @@
     background-color: rgb(5, 46, 22);
     opacity: 0;
     visibility: visible;
-    transition: all 0.5s ease-out;
-    position: relative;
+    position: fixed;
     overflow: hidden;
-    animation: fadeIn 0.5s ease-out forwards;
+    z-index: 9999;
+    animation: fadeInLoader 0.5s ease-out forwards;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInLoader {
     from {
         opacity: 0;
     }
@@ -51,8 +51,7 @@
 .loading-container.fade-out {
     opacity: 0;
     visibility: hidden;
-    transform: scale(1.05);
-    transition: all 0.5s ease-out;
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
 }
 
 .tree {

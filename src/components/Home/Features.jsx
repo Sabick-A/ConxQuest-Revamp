@@ -1,11 +1,74 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { motion, AnimatePresence } from 'framer-motion';
+import styled from 'styled-components';
 import gamifiedLearning from '../../assets/images/Home/gamifiedLearning.webp';
 import MapImage from '../../assets/images/Home/MapImage.webp';
 import chatbot from '../../assets/images/Home/chatbot.webp';
 import resource from '../../assets/images/Home/resource.webp';
 import npc from '../../assets/images/Home/npc.webp';
+
+const Background = styled(motion.div)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 1;
+  background: linear-gradient(
+    120deg,
+    rgba(5, 46, 22, 0.95) 0%,
+    rgba(5, 46, 22, 0.98) 100%
+  );
+`;
+
+const StarField = styled(motion.div)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-content: space-around;
+  opacity: 0.25;
+`;
+
+const Star = styled(motion.div)`
+  position: absolute;
+  width: ${(props) => props.size || "12px"};
+  height: ${(props) => props.size || "12px"};
+  clip-path: ${(props) => {
+    switch(props.shape) {
+      case 'triangle':
+        return 'polygon(50% 0%, 0% 100%, 100% 100%)';
+      case 'diamond':
+        return 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)';
+      case 'hexagon':
+        return 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+      default:
+        return `polygon(
+          50% 0%,
+          61% 35%,
+          98% 35%,
+          68% 57%,
+          79% 91%,
+          50% 70%,
+          21% 91%,
+          32% 57%,
+          2% 35%,
+          39% 35%
+        )`;
+    }
+  }};
+  background: ${(props) => 
+    props.gradient ? 
+    `linear-gradient(135deg, ${props.gradient.start} 0%, ${props.gradient.end} 100%)` :
+    'linear-gradient(135deg, #4ade80 0%, #14532d 100%)'
+  };
+  opacity: ${(props) => props.brightness || 0.8};
+  box-shadow: 0 0 ${(props) => props.glow || "8px"} ${(props) => props.glowColor || "rgba(74, 222, 128, 0.4)"};
+`;
 
 const features = [
     {
@@ -79,6 +142,113 @@ function Features() {
     const [isVisible, setIsVisible] = useState(false);
     const [imageLoaded, setImageLoaded] = useState({});
 
+    const shapes = useMemo(() => {
+        const elements = [];
+        // Stars (60)
+        for (let i = 0; i < 60; i++) {
+            const size = Math.floor(Math.random() * 12 + 8) + "px";
+            const left = Math.floor(Math.random() * 100) + "%";
+            const top = Math.floor(Math.random() * 100) + "%";
+            const brightness = (Math.floor(Math.random() * 6) + 4) / 10;
+            const glow = Math.floor(Math.random() * 12 + 6) + "px";
+            const rotationDuration = 3 + Math.floor(i / 10) * 2;
+            const scaleDuration = 2 + Math.floor(i / 8) * 1.5;
+
+            elements.push(
+                <Star
+                    key={`star-${i}`}
+                    size={size}
+                    brightness={brightness}
+                    glow={glow}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{
+                        opacity: brightness,
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 180, 0],
+                    }}
+                    transition={{
+                        opacity: { duration: 0.3, delay: i * 0.02 },
+                        scale: {
+                            repeat: Infinity,
+                            duration: scaleDuration,
+                            ease: "easeInOut",
+                        },
+                        rotate: {
+                            repeat: Infinity,
+                            duration: rotationDuration,
+                            ease: "linear",
+                        },
+                    }}
+                    style={{
+                        position: "absolute",
+                        left,
+                        top,
+                        filter: `hue-rotate(${Math.floor(Math.random() * 30)}deg)`,
+                    }}
+                />
+            );
+        }
+
+        // Additional shapes (30)
+        const shapes = ['triangle', 'diamond', 'hexagon'];
+        const gradients = [
+            { start: '#4ade80', end: '#14532d' },
+            { start: '#22c55e', end: '#15803d' },
+            { start: '#86efac', end: '#166534' }
+        ];
+
+        for (let i = 0; i < 30; i++) {
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            const gradient = gradients[Math.floor(Math.random() * gradients.length)];
+            const size = Math.floor(Math.random() * 16 + 10) + "px";
+            const left = Math.floor(Math.random() * 100) + "%";
+            const top = Math.floor(Math.random() * 100) + "%";
+            const brightness = (Math.floor(Math.random() * 4) + 2) / 10;
+            const glow = Math.floor(Math.random() * 15 + 8) + "px";
+            const rotationDuration = 4 + Math.floor(i / 8) * 2;
+            const scaleDuration = 3 + Math.floor(i / 6) * 1.5;
+
+            elements.push(
+                <Star
+                    key={`shape-${i}`}
+                    shape={shape}
+                    size={size}
+                    brightness={brightness}
+                    glow={glow}
+                    gradient={gradient}
+                    glowColor={`rgba(${shape === 'triangle' ? '134, 239, 172' : '74, 222, 128'}, 0.4)`}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{
+                        opacity: brightness,
+                        scale: [1, 1.3, 1],
+                        rotate: [0, 360, 0],
+                    }}
+                    transition={{
+                        opacity: { duration: 0.4, delay: i * 0.03 },
+                        scale: {
+                            repeat: Infinity,
+                            duration: scaleDuration,
+                            ease: "easeInOut",
+                        },
+                        rotate: {
+                            repeat: Infinity,
+                            duration: rotationDuration,
+                            ease: "linear",
+                        },
+                    }}
+                    style={{
+                        position: "absolute",
+                        left,
+                        top,
+                        filter: `hue-rotate(${Math.floor(Math.random() * 45)}deg)`,
+                    }}
+                />
+            );
+        }
+
+        return elements;
+    }, []);
+
     useEffect(() => {
         const preloadImages = () => {
             features.forEach((feature, index) => {
@@ -129,33 +299,9 @@ function Features() {
 
     return (
         <div id="features" className="min-h-screen w-full flex flex-col bg-[rgb(5,46,22)] relative overflow-hidden pt-5 md:pt-24">
-            {/* Background with hexagons */}
-            <motion.div 
-                className="absolute inset-0 overflow-hidden z-[1] bg-gradient-to-br from-[rgba(5,46,22,0.95)] to-[rgba(5,46,22,0.98)]"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-            >
-                <div className="absolute w-full h-full grid grid-cols-8 gap-8 -rotate-15 scale-150 opacity-10">
-                    {[...Array(32)].map((_, index) => (
-                        <motion.div
-                            key={index}
-                            className="w-full pt-[115%] relative clip-hexagon bg-gradient-to-br from-[rgba(74,222,128,0.3)] to-[rgba(74,222,128,0.1)]"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ 
-                                opacity: [0.4, 0.8, 0.4],
-                                scale: [0.8, 1, 0.8],
-                            }}
-                            transition={{
-                                duration: 4 + (index % 4) * 2,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                                delay: index * 0.1
-                            }}
-                        />
-                    ))}
-                </div>
-            </motion.div>
+            <Background>
+                <StarField>{shapes}</StarField>
+            </Background>
 
             {/* Content */}
             <motion.div

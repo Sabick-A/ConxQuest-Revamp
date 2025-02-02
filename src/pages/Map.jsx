@@ -8,6 +8,7 @@ import {
 } from "../utils/Map";
 import { useKeyboard } from "../hooks/useKeyboard";
 import Loader from "../components/Map/Loader/Loader";
+import InitialLoader from "../components/common/InitialLoader";
 import XBtn from "../components/Map/XBtn";
 import Navbar from "../components/Map/Navbar";
 import Controls from "../components/Map/Controls";
@@ -30,6 +31,7 @@ function Canvas() {
   const [showKnowledgeBook, setShowKnowledgeBook] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [currentNpcId, setCurrentNpcId] = useState(null);
+  const [navigating, setNavigating] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const gameStateRef = useRef(null);
@@ -289,7 +291,11 @@ function Canvas() {
     });
 
     // Add event listeners
-    window.addEventListener("keydown", handleKeyDown);
+    const keyDownHandler = (e) => handleKeyDown(e, (callback) => {
+      setNavigating(true);
+      callback();
+    });
+    window.addEventListener("keydown", keyDownHandler);
     window.addEventListener("keyup", handleKeyUp);
 
     // Setup Botpress webchat event listeners
@@ -381,7 +387,7 @@ function Canvas() {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keydown", keyDownHandler);
       window.removeEventListener("keyup", handleKeyUp);
       if (animationIdRef.current) {
         window.cancelAnimationFrame(animationIdRef.current);
@@ -389,7 +395,7 @@ function Canvas() {
       }
       window.removeEventListener("resize", handleResize);
     };
-  }, [animate]);
+  }, [animate, handleKeyDown, handleKeyUp]);
 
   useEffect(() => {
     if (imagesLoaded && minLoadingComplete) {
@@ -441,31 +447,38 @@ function Canvas() {
   );
 
   return (
-    <div className={`transition-opacity duration-500 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
+    <>
       {loading && <Loader fadeOut={fadeOut} />}
-      <canvas ref={canvasRef} />
-      {!showDialog && !showKnowledgeBook && xButton && memoizedXBtn}
-      {!loading && <Navbar />}
-      {!loading && showControls && memoizedControls}
-      {!loading && showMap && (
-        <MapView 
-          onClose={() => setShowMap(false)} 
-          playerPosition={playerPosition}
-        />
+      {navigating && (
+        <div className="fixed inset-0 z-50 backdrop-blur-md">
+          <InitialLoader transparent={true} />
+        </div>
       )}
-      {showGuide && <Guide onClose={() => setShowGuide(false)} />}
-      {showKnowledgeBook && (
-        <KnowledgeBook 
-          onClose={handleKnowledgeBookClose}
-        />
-      )}
-      {showDialog && (
-        <Dialog
-          npcId={currentNpcId}
-          onClose={handleDialogClose}
-        />
-      )}
-    </div>
+      <div className={`transition-opacity duration-500 ${!loading ? 'opacity-100' : 'opacity-0'}`}>
+        <canvas ref={canvasRef} />
+        {!showDialog && !showKnowledgeBook && xButton && memoizedXBtn}
+        {!loading && <Navbar />}
+        {!loading && showControls && memoizedControls}
+        {!loading && showMap && (
+          <MapView 
+            onClose={() => setShowMap(false)} 
+            playerPosition={playerPosition}
+          />
+        )}
+        {showGuide && <Guide onClose={() => setShowGuide(false)} />}
+        {showKnowledgeBook && (
+          <KnowledgeBook 
+            onClose={handleKnowledgeBookClose}
+          />
+        )}
+        {showDialog && (
+          <Dialog
+            npcId={currentNpcId}
+            onClose={handleDialogClose}
+          />
+        )}
+      </div>
+    </>
   );
 }
 

@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 
 function Loader({ fadeOut }) {
     return (
-        <div className={`loading-container z-20 ${fadeOut ? 'fade-out' : ''}`}>
-            {/* Animated Background Pattern */}
+        <div className={`loading-container ${fadeOut ? 'fade-out' : ''}`}>
+            {/* Optimized Background Pattern - reduced count and simplified animation */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(6)].map((_, i) => (
+                {[...Array(3)].map((_, i) => (
                     <motion.div
                         key={i}
                         className="absolute w-full h-full border-2 border-green-400/10 rounded-full"
@@ -15,69 +15,65 @@ function Loader({ fadeOut }) {
                             left: '50%',
                             top: '50%',
                             transform: 'translate(-50%, -50%)',
-                            opacity: 0
                         }}
-                        initial={{ scale: 0.5, opacity: 0 }}
+                        initial={{ scale: 0.5 }}
                         animate={{
                             scale: [0.5, 1.5, 0.5],
-                            opacity: [0, 0.15, 0],
-                            rotate: [0, 180, 360]
+                            opacity: [0.1, 0.2, 0.1],
                         }}
                         transition={{
-                            duration: 8,
+                            duration: 4,
                             repeat: Infinity,
-                            delay: i * 1.2,
-                            ease: "easeInOut"
+                            delay: i * 1.3,
+                            ease: "linear"
                         }}
                     />
                 ))}
             </div>
 
-            {/* Floating particles */}
+            {/* Optimized particles - reduced count */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(30)].map((_, i) => (
+                {[...Array(15)].map((_, i) => (
                     <motion.div
                         key={i}
                         className="absolute w-1 h-1 bg-green-400/30 rounded-full"
                         initial={{ 
                             x: Math.random() * window.innerWidth, 
-                            y: Math.random() * window.innerHeight 
+                            y: Math.random() * window.innerHeight,
+                            opacity: 0.3
                         }}
                         animate={{ 
-                            y: [null, -40, 40],
-                            x: [null, -40, 40],
-                            scale: [1, 1.5, 1],
-                            opacity: [0.3, 0.7, 0.3]
+                            y: [null, -20, 20],
+                            x: [null, -20, 20],
+                            opacity: [0.3, 0.5, 0.3]
                         }}
                         transition={{ 
-                            duration: 3 + Math.random() * 2,
+                            duration: 2,
                             repeat: Infinity,
                             repeatType: "reverse",
-                            ease: "easeInOut",
-                            delay: Math.random() * 2
+                            ease: "linear",
+                            delay: Math.random()
                         }}
                     />
                 ))}
             </div>
 
-            {/* Hexagon Grid Background */}
+            {/* Simplified Hexagon Grid - reduced size and count */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-                {[...Array(8)].map((_, row) => (
+                {[...Array(4)].map((_, row) => (
                     <div key={row} className="flex justify-center">
-                        {[...Array(8)].map((_, col) => (
+                        {[...Array(4)].map((_, col) => (
                             <motion.div
                                 key={`${row}-${col}`}
-                                className="w-24 h-24 m-2 clip-hexagon border border-green-400/20"
-                                initial={{ opacity: 0.1 }}
+                                className="w-16 h-16 m-2 clip-hexagon border border-green-400/20"
                                 animate={{ 
-                                    opacity: [0.1, 0.3, 0.1],
-                                    scale: [1, 1.1, 1]
+                                    opacity: [0.1, 0.2, 0.1]
                                 }}
                                 transition={{
-                                    duration: 3,
+                                    duration: 2,
                                     repeat: Infinity,
                                     delay: (row + col) * 0.2,
-                                    ease: "easeInOut"
+                                    ease: "linear"
                                 }}
                             />
                         ))}
@@ -85,71 +81,42 @@ function Loader({ fadeOut }) {
                 ))}
             </div>
 
-            {/* Corner Decorations */}
+            {/* Simplified Corner Decorations */}
             <div className="absolute inset-0 pointer-events-none">
                 <motion.div 
                     className="absolute top-10 left-10 w-20 h-20 border-l-2 border-t-2 border-green-400/30"
-                    animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 2, repeat: Infinity }}
+                    animate={{ opacity: [0.3, 0.5, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                 />
                 <motion.div 
                     className="absolute top-10 right-10 w-20 h-20 border-r-2 border-t-2 border-green-400/30"
-                    animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                    animate={{ opacity: [0.3, 0.5, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 0.5, ease: "linear" }}
                 />
                 <motion.div 
                     className="absolute bottom-10 left-10 w-20 h-20 border-l-2 border-b-2 border-green-400/30"
-                    animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                    animate={{ opacity: [0.3, 0.5, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 1, ease: "linear" }}
                 />
                 <motion.div 
                     className="absolute bottom-10 right-10 w-20 h-20 border-r-2 border-b-2 border-green-400/30"
-                    animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
+                    animate={{ opacity: [0.3, 0.5, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 1.5, ease: "linear" }}
                 />
             </div>
 
             {/* Main Content */}
             <motion.h1 
-                className="text-4xl md:text-5xl font-main text-green-400 text-center px-4 relative"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                className="text-4xl md:text-5xl font-main text-green-400 text-center px-4 relative z-10"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
             >
-                <motion.span
-                    className="absolute -left-8 top-1/2 -translate-y-1/2 text-2xl"
-                    animate={{ x: [-5, 5, -5], rotate: [-10, 10, -10] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                >
-                    🌿
-                </motion.span>
                 Building The World
-                <motion.span 
-                    className="inline-block ml-2"
-                    animate={{
-                        scale: [1, 1.2, 1],
-                        rotate: [0, 10, 0]
-                    }}
-                    transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                    }}
-                >
-                    🌳
-                </motion.span>
-                <motion.span
-                    className="absolute -right-8 top-1/2 -translate-y-1/2 text-2xl"
-                    animate={{ x: [5, -5, 5], rotate: [10, -10, 10] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                >
-                    🌿
-                </motion.span>
             </motion.h1>
             
-            <div className="relative">
-                <div className="tree mt-10">
-                    {/* Existing tree structure */}
+            <div className="relative mt-10">
+                <div className="tree">
                     <div className="branch" style={{ "--x": "0" }}>
                         <span style={{ "--i": "0" }}></span>
                         <span style={{ "--i": "1" }}></span>
@@ -168,12 +135,6 @@ function Loader({ fadeOut }) {
                         <span style={{ "--i": "2" }}></span>
                         <span style={{ "--i": "3" }}></span>
                     </div>
-                    <div className="branch" style={{ "--x": "3" }}>
-                        <span style={{ "--i": "0" }}></span>
-                        <span style={{ "--i": "1" }}></span>
-                        <span style={{ "--i": "2" }}></span>
-                        <span style={{ "--i": "3" }}></span>
-                    </div>
                     <div className="stem">
                         <span style={{ "--i": "0" }}></span>
                         <span style={{ "--i": "1" }}></span>
@@ -184,53 +145,23 @@ function Loader({ fadeOut }) {
                 </div>
             </div>
 
-            {/* Loading Text with Enhanced Effects */}
-            <div className="relative flex flex-col items-center">
-                <div className="relative">
-                    <motion.h1 
-                        className="font-game text-base text-green-400/80"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: [0.4, 1, 0.4] }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
-                    >
-                        Loading...
-                    </motion.h1>
-                    <motion.div 
-                        className="absolute -bottom-2 w-[120%] h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent left-1/2 -translate-x-1/2"
-                        animate={{
-                            scaleX: [1, 1.5, 1],
-                            opacity: [0.3, 0.7, 0.3]
-                        }}
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
-                    />
-                </div>
-                
-                {/* Progress Dots */}
-                <div className="flex gap-2 mt-4">
-                    {[...Array(3)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="w-1.5 h-1.5 rounded-full bg-green-400/50"
-                            animate={{ 
-                                scale: [1, 1.5, 1],
-                                opacity: [0.3, 1, 0.3]
-                            }}
-                            transition={{
-                                duration: 1,
-                                repeat: Infinity,
-                                delay: i * 0.2
-                            }}
-                        />
-                    ))}
-                </div>
+            {/* Loading Text with Progress Dots */}
+            <div className="relative flex flex-col items-center mt-4">
+                <motion.div 
+                    className="font-game text-base text-green-400/80"
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                >
+                    Loading
+                    <motion.span
+                        animate={{ opacity: [0, 1, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                    >...</motion.span>
+                </motion.div>
             </div>
         </div>
     );

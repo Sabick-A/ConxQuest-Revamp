@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -43,23 +43,38 @@ const StarField = styled(motion.div)`
 
 const Star = styled(motion.div)`
     position: absolute;
-    width: ${props => props.size || '12px'};
-    height: ${props => props.size || '12px'};
-    clip-path: polygon(
-        50% 0%,
-        61% 35%,
-        98% 35%,
-        68% 57%,
-        79% 91%,
-        50% 70%,
-        21% 91%,
-        32% 57%,
-        2% 35%,
-        39% 35%
-    );
-    background: linear-gradient(135deg, #4ade80 0%, #14532d 100%);
-    opacity: ${props => props.brightness || 0.8};
-    box-shadow: 0 0 ${props => props.glow || '8px'} rgba(74, 222, 128, 0.4);
+    width: ${(props) => props.size || "12px"};
+    height: ${(props) => props.size || "12px"};
+    clip-path: ${(props) => {
+        switch(props.shape) {
+            case 'triangle':
+                return 'polygon(50% 0%, 0% 100%, 100% 100%)';
+            case 'diamond':
+                return 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)';
+            case 'hexagon':
+                return 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+            default:
+                return `polygon(
+                    50% 0%,
+                    61% 35%,
+                    98% 35%,
+                    68% 57%,
+                    79% 91%,
+                    50% 70%,
+                    21% 91%,
+                    32% 57%,
+                    2% 35%,
+                    39% 35%
+                )`;
+        }
+    }};
+    background: ${(props) => 
+        props.gradient ? 
+        `linear-gradient(135deg, ${props.gradient.start} 0%, ${props.gradient.end} 100%)` :
+        'linear-gradient(135deg, #4ade80 0%, #14532d 100%)'
+    };
+    opacity: ${(props) => props.brightness || 0.8};
+    box-shadow: 0 0 ${(props) => props.glow || "8px"} ${(props) => props.glowColor || "rgba(74, 222, 128, 0.4)"};
 `;
 
 const Content = styled(motion.div)`
@@ -196,65 +211,117 @@ const Footer = () => {
         tap: { scale: 0.8 }
     };
 
-    // Generate stars for the background
-    const stars = Array.from({ length: 80 }, (_, i) => {
-        const size = Math.random() * 12 + 8 + 'px';
-        const left = Math.random() * 100 + '%';
-        const top = Math.random() * 100 + '%';
-        const brightness = Math.random() * 0.6 + 0.4;
-        const glow = Math.random() * 12 + 6 + 'px';
-        
-        return (
-            <Star
-                key={i}
-                size={size}
-                brightness={brightness}
-                glow={glow}
-                initial={{ 
-                    opacity: 0, 
-                    scale: 0,
-                    x: left,
-                    y: top
-                }}
-                animate={{ 
-                    opacity: brightness,
-                    scale: [1, 1.3, 1],
-                    rotate: [0, 180, 0],
-                    transition: {
-                        opacity: {
-                            duration: 0.5,
-                            delay: i * 0.02
-                        },
+    const shapes = useMemo(() => {
+        const elements = [];
+        // Stars (60)
+        for (let i = 0; i < 60; i++) {
+            const size = Math.floor(Math.random() * 12 + 8) + "px";
+            const left = Math.floor(Math.random() * 100) + "%";
+            const top = Math.floor(Math.random() * 100) + "%";
+            const brightness = (Math.floor(Math.random() * 6) + 4) / 10;
+            const glow = Math.floor(Math.random() * 12 + 6) + "px";
+            const rotationDuration = 3 + Math.floor(i / 10) * 2;
+            const scaleDuration = 2 + Math.floor(i / 8) * 1.5;
+
+            elements.push(
+                <Star
+                    key={`star-${i}`}
+                    size={size}
+                    brightness={brightness}
+                    glow={glow}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{
+                        opacity: brightness,
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 180, 0],
+                    }}
+                    transition={{
+                        opacity: { duration: 0.3, delay: i * 0.02 },
                         scale: {
                             repeat: Infinity,
-                            duration: 2.5 + Math.random() * 2,
-                            ease: "easeInOut"
+                            duration: scaleDuration,
+                            ease: "easeInOut",
                         },
                         rotate: {
                             repeat: Infinity,
-                            duration: 5 + Math.random() * 3,
-                            ease: "linear"
-                        }
-                    }
-                }}
-                style={{
-                    position: 'absolute',
-                    left,
-                    top,
-                    filter: `hue-rotate(${Math.random() * 30}deg)`
-                }}
-            />
-        );
-    });
+                            duration: rotationDuration,
+                            ease: "linear",
+                        },
+                    }}
+                    style={{
+                        position: "absolute",
+                        left,
+                        top,
+                        filter: `hue-rotate(${Math.floor(Math.random() * 30)}deg)`,
+                    }}
+                />
+            );
+        }
+
+        // Additional shapes (30)
+        const shapes = ['triangle', 'diamond', 'hexagon'];
+        const gradients = [
+            { start: '#4ade80', end: '#14532d' },
+            { start: '#22c55e', end: '#15803d' },
+            { start: '#86efac', end: '#166534' }
+        ];
+
+        for (let i = 0; i < 30; i++) {
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            const gradient = gradients[Math.floor(Math.random() * gradients.length)];
+            const size = Math.floor(Math.random() * 16 + 10) + "px";
+            const left = Math.floor(Math.random() * 100) + "%";
+            const top = Math.floor(Math.random() * 100) + "%";
+            const brightness = (Math.floor(Math.random() * 4) + 2) / 10;
+            const glow = Math.floor(Math.random() * 15 + 8) + "px";
+            const rotationDuration = 4 + Math.floor(i / 8) * 2;
+            const scaleDuration = 3 + Math.floor(i / 6) * 1.5;
+
+            elements.push(
+                <Star
+                    key={`shape-${i}`}
+                    shape={shape}
+                    size={size}
+                    brightness={brightness}
+                    glow={glow}
+                    gradient={gradient}
+                    glowColor={`rgba(${shape === 'triangle' ? '134, 239, 172' : '74, 222, 128'}, 0.4)`}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{
+                        opacity: brightness,
+                        scale: [1, 1.3, 1],
+                        rotate: [0, 360, 0],
+                    }}
+                    transition={{
+                        opacity: { duration: 0.4, delay: i * 0.03 },
+                        scale: {
+                            repeat: Infinity,
+                            duration: scaleDuration,
+                            ease: "easeInOut",
+                        },
+                        rotate: {
+                            repeat: Infinity,
+                            duration: rotationDuration,
+                            ease: "linear",
+                        },
+                    }}
+                    style={{
+                        position: "absolute",
+                        left,
+                        top,
+                        filter: `hue-rotate(${Math.floor(Math.random() * 45)}deg)`,
+                    }}
+                />
+            );
+        }
+
+        return elements;
+    }, []);
 
     return (
         <FooterSection id="contact">
-            <Background
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-            >
-                <StarField>{stars}</StarField>
+            <Background>
+                <StarField>{shapes}</StarField>
             </Background>
             <Content
                 variants={containerVariants}

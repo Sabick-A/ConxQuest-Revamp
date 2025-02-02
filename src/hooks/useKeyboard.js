@@ -17,14 +17,23 @@ export const useKeyboard = () => {
     });
     const animationIdRef = useRef();
 
-    const cleanupAndNavigate = useCallback(() => {
+    const cleanupAndNavigate = useCallback((onNavigate) => {
         if (animationIdRef.current) {
             window.cancelAnimationFrame(animationIdRef.current);
         }
-        navigate("/");
+        if (onNavigate) {
+            onNavigate(() => {
+                // Wait for the InitialLoader animation to play
+                setTimeout(() => {
+                    navigate("/");
+                }, 800); // Slightly longer delay for InitialLoader animation
+            });
+        } else {
+            navigate("/");
+        }
     }, [navigate]);
 
-    const handleKeyDown = useCallback((e) => {
+    const handleKeyDown = useCallback((e, onNavigate) => {
         e.preventDefault();
         const key = e.key.toLowerCase();
         switch (key) {
@@ -42,7 +51,7 @@ export const useKeyboard = () => {
                 }
                 break;
             case "h":
-                cleanupAndNavigate();
+                cleanupAndNavigate(onNavigate);
                 break;
         }
     }, [cleanupAndNavigate]);
