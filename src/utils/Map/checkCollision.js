@@ -1,6 +1,6 @@
 const softedge = {
-    x: 25,
-    y: 25,
+    x: 15,
+    y: 15,
 };
 export function checkCollision({ rectangle1, rectangle2 }) {
     return (
