@@ -16,8 +16,11 @@ import MapView from "../components/Map/MapView";
 import Guide from "../components/Map/Guide";
 import KnowledgeBook from "../components/Map/KnowledgeBook";
 import Dialog from "../components/Map/Dialog";
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function Canvas() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
@@ -32,9 +35,11 @@ function Canvas() {
   const [showDialog, setShowDialog] = useState(false);
   const [currentNpcId, setCurrentNpcId] = useState(null);
   const [navigating, setNavigating] = useState(false);
+  const [isReturningFromGame, setIsReturningFromGame] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const gameStateRef = useRef(null);
+  const [savedPlayerPosition, setSavedPlayerPosition] = useState(null);
 
   const { keys, lastKey, handleKeyDown, handleKeyUp, animationIdRef } =
     useKeyboard();
@@ -440,6 +445,84 @@ function Canvas() {
     return () => window.removeEventListener("keydown", handleInitialKeyPress);
   }, []);
 
+  useEffect(() => {
+    const handleGameStart = (event) => {
+      const { type, gameState } = event.detail;
+      
+      // Save complete game state
+      localStorage.setItem('lastGameState', JSON.stringify(gameState));
+      
+      // Navigate to appropriate game
+      if (type === 1) {
+        navigate('/games/cardgame', { 
+          state: { 
+            fromMap: true,
+            gameState 
+          }
+        });
+      }
+    };
+
+    // We don't need handleGameComplete anymore since ProgressBar handles it directly
+    window.addEventListener('startGame', handleGameStart);
+
+    return () => {
+      window.removeEventListener('startGame', handleGameStart);
+    };
+  }, [navigate]);
+
+  // Update the state restoration effect
+  useEffect(() => {
+    const restoreGameState = (gameState) => {
+        if (gameStateRef.current) {
+            // Restore player position
+            if (gameState.playerPosition && gameStateRef.current.player) {
+                gameStateRef.current.player.position = gameState.playerPosition;
+            }
+
+            // Restore all movable elements
+            if (gameState.movablesPositions) {
+                const movables = [
+                    gameStateRef.current.background,
+                    ...gameStateRef.current.boundaries,
+                    gameStateRef.current.foreground,
+                    ...gameStateRef.current.teleports,
+                    ...gameStateRef.current.interacts
+                ];
+
+                gameState.movablesPositions.forEach((pos, index) => {
+                    if (movables[index]) {
+                        movables[index].position.x = pos.x;
+                        movables[index].position.y = pos.y;
+                    }
+                });
+            }
+        }
+    };
+
+    // Check if we're returning from a game
+    if (location.state?.returnedFromGame) {
+        setIsReturningFromGame(true);
+        setShowControls(false); // Don't show controls when returning
+    }
+
+    // Check both localStorage and location state for game state
+    const savedState = localStorage.getItem('lastGameState');
+    const locationState = location.state?.gameState;
+
+    if (locationState) {
+        restoreGameState(locationState);
+    } else if (savedState) {
+        restoreGameState(JSON.parse(savedState));
+    }
+
+    // Clear saved states
+    localStorage.removeItem('lastGameState');
+    if (location.state?.returnedFromGame) {
+        navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
+
   const memoizedXBtn = useMemo(() => <XBtn position={playerPosition} />, [playerPosition]);
   const memoizedControls = useMemo(
     () => <Controls onClose={() => setShowControls(false)} />,
@@ -448,7 +531,7 @@ function Canvas() {
 
   return (
     <>
-      {loading && <Loader fadeOut={fadeOut} />}
+      {loading && <Loader fadeOut={fadeOut} isReturning={isReturningFromGame} />}
       {navigating && (
         <div className="fixed inset-0 z-50 backdrop-blur-md">
           <InitialLoader transparent={true} />
@@ -458,7 +541,7 @@ function Canvas() {
         <canvas ref={canvasRef} />
         {!showDialog && !showKnowledgeBook && xButton && memoizedXBtn}
         {!loading && <Navbar />}
-        {!loading && showControls && memoizedControls}
+        {!loading && showControls && !isReturningFromGame && memoizedControls}
         {!loading && showMap && (
           <MapView 
             onClose={() => setShowMap(false)} 

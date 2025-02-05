@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Progress = styled.div`
@@ -20,7 +20,7 @@ const Progress = styled.div`
 
 const LoadingBar = styled.div`
   height: 100%;
-  width: ${props => props.progress || '70'}%;
+  width: ${props => props.progress+25 || '25'}%;
   background: whitesmoke;
   border-radius: 8px;
   position: absolute;
@@ -81,13 +81,42 @@ const LevelText = styled.span`
   letter-spacing: 1px;
 `;
 
-function ProgressBar({ progress }) {
-  return (
-    <Progress>
-      <LoadingBar progress={progress} />
-      <LevelText className="font-game">Lvl 1</LevelText>
-    </Progress>
-  );
+function ProgressBar() {
+    const [progress, setProgress] = useState(() => {
+        return parseInt(localStorage.getItem('gameProgress') || '0');
+    });
+
+    useEffect(() => {
+        // Update progress when localStorage changes
+        const handleStorageChange = () => {
+            const newProgress = parseInt(localStorage.getItem('gameProgress') || '0');
+            setProgress(newProgress);
+        };
+
+        // Listen for the gameComplete event
+        const handleGameComplete = () => {
+            const newProgress = parseInt(localStorage.getItem('gameProgress') || '0');
+            setProgress(newProgress);
+        };
+
+        // Add event listeners
+        window.addEventListener('storage', handleStorageChange);
+        window.addEventListener('gameComplete', handleGameComplete);
+
+        return () => {
+            // Clean up event listeners
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('gameComplete', handleGameComplete);
+        };
+    }, []);
+
+
+    return (
+        <Progress>
+            <LoadingBar progress={progress} />
+            <LevelText className="font-game">Lvl 1</LevelText>
+        </Progress>
+    );
 }
 
 export default ProgressBar;

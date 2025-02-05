@@ -8,7 +8,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 const Home = lazy(() => import('./pages/Home'));
 const Map = lazy(() => import('./pages/Map'));
 const Page404 = lazy(() => import('./pages/Page404'));
-const CardQuest = lazy(() => import('./pages/Games/CardQuest'));
+const CardGame = lazy(() => import('./pages/Games/cardgame/CardGame'));
 
 const router = createBrowserRouter([
     {
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
         children: [
             { index: true, element: <Home /> },
             { path: "map", element: <Map /> },
-            { path: "games/cardQuest", element: <CardQuest /> },
+            { path: "games/cardgame", element: <CardGame /> },
             { path: "*", element: <Page404 /> },
         ],
     },

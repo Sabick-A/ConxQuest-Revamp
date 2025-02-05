@@ -2,7 +2,7 @@ import React from "react";
 import "./Loader.css";
 import { motion } from "framer-motion";
 
-function Loader({ fadeOut }) {
+function Loader({ fadeOut, isReturning = false }) {
     return (
         <div className={`loading-container ${fadeOut ? 'fade-out' : ''}`}>
             {/* Optimized Background Pattern - reduced count and simplified animation */}
@@ -112,7 +112,7 @@ function Loader({ fadeOut }) {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
             >
-                Building The World
+                {isReturning ? 'Returning to ConxQuest Island' : 'Building The World'}
             </motion.h1>
             
             <div className="relative mt-10">
@@ -156,7 +156,7 @@ function Loader({ fadeOut }) {
                         ease: "linear"
                     }}
                 >
-                    Loading
+                    {isReturning ? 'Teleporting' : 'Loading'}
                     <motion.span
                         animate={{ opacity: [0, 1, 0] }}
                         transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}

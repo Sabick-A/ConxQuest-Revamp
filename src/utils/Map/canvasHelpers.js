@@ -42,7 +42,7 @@ export const drawElements = (context, elements) => {
     elements.forEach((element) => element.draw(context));
 };
 
-const checkTeleportation = (context, player, teleports, keys) => {
+const checkTeleportation = (context, player, teleports, keys, movables) => {
     let teleportActivated = false;
     teleports.forEach((pad) => {
         if (
@@ -51,25 +51,25 @@ const checkTeleportation = (context, player, teleports, keys) => {
         ) {
             console.log("teleportation activated");
             teleportActivated = true;
-            if (pad.val == 1) {
-                console.log("redirecting to cardGame");
-                location.href = '/cardgame';
-            } else if (pad.val == 2) {
-                console.log("redirecting to quizGame");
-                location.href = '/quizgame';
-            } else if(pad.val==3){
-                console.log("redirecting to situation game");
-                location.href= '/situationgame';
-            } else if(pad.val==4){
-                console.log("redirecting to drag'n'drop game");
-                location.href= '/matchup';
-            } else if(pad.val==5){
-                console.log("redirecting to spin wheel");
-                location.href= '/spin';
-            }
-            else {
-                console.log("X key is not pressed")
-            }
+            
+            // Save complete game state
+            const gameState = {
+                playerPosition: {
+                    x: player.position.x,
+                    y: player.position.y
+                },
+                movablesPositions: movables.map(movable => ({
+                    x: movable.position.x,
+                    y: movable.position.y
+                }))
+            };
+            
+            window.dispatchEvent(new CustomEvent('startGame', { 
+                detail: {
+                    type: pad.val,
+                    gameState
+                }
+            }));
         }
     });
     return teleportActivated;
@@ -162,12 +162,13 @@ export const updateGameLogic = (
     movables,
     deltaTime
 ) => {
-    drawElements(context, [background,player,foreground]);
+    drawElements(context, [background, player, foreground, ...teleports, ...boundaries]);
     const teleportActivated = checkTeleportation(
         context,
         player,
         teleports,
-        keys
+        keys,
+        movables
     );
     
     checkInteraction(

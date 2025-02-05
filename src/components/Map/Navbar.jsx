@@ -6,11 +6,11 @@ import logo2 from "../../assets/images/common/logo2.png";
 function Navbar() {
   return (
     <>
-      <div >
+      <div>
         <span className="absolute top-12 left-10 hidden md:block">
           <img src={logo2} className="h-10" alt="ConxQuest Logo" />
         </span>
-        <ProgressBar progress={40} />
+        <ProgressBar />
         <InfoBtn />
       </div>
     </>
