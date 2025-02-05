@@ -15,6 +15,7 @@ import boy1 from "./Boy1.svg";
 import boy2 from "./Boy2.svg";
 import boy3 from "./Boy3.svg";
 import police from "./police.png";
+import cardGame from "./card_game.png";
 
 const backgroundImage = new Image();
 backgroundImage.src = mapImage;
@@ -67,6 +68,9 @@ boy3Image.src = boy3;
 const policeImage = new Image();
 policeImage.src = police;
 
+const cardGameImage = new Image();
+cardGameImage.src = cardGame;
+
 export {
     backgroundImage,
     foregroundImage,
@@ -85,4 +89,5 @@ export {
     boy2Image,
     boy3Image,
     policeImage,
+    cardGameImage,
 };

@@ -16,6 +16,7 @@ import MapView from "../components/Map/MapView";
 import Guide from "../components/Map/Guide";
 import KnowledgeBook from "../components/Map/KnowledgeBook";
 import Dialog from "../components/Map/Dialog";
+import ProgressNotification from "../components/Map/ProgressNotification";
 import { useNavigate, useLocation } from 'react-router-dom';
 
 function Canvas() {
@@ -36,6 +37,8 @@ function Canvas() {
   const [currentNpcId, setCurrentNpcId] = useState(null);
   const [navigating, setNavigating] = useState(false);
   const [isReturningFromGame, setIsReturningFromGame] = useState(false);
+  const [showProgressNotification, setShowProgressNotification] = useState(false);
+  const [progressValues, setProgressValues] = useState({ start: 0, end: 0 });
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const gameStateRef = useRef(null);
@@ -474,36 +477,51 @@ function Canvas() {
   // Update the state restoration effect
   useEffect(() => {
     const restoreGameState = (gameState) => {
-        if (gameStateRef.current) {
-            // Restore player position
-            if (gameState.playerPosition && gameStateRef.current.player) {
-                gameStateRef.current.player.position = gameState.playerPosition;
-            }
-
-            // Restore all movable elements
-            if (gameState.movablesPositions) {
-                const movables = [
-                    gameStateRef.current.background,
-                    ...gameStateRef.current.boundaries,
-                    gameStateRef.current.foreground,
-                    ...gameStateRef.current.teleports,
-                    ...gameStateRef.current.interacts
-                ];
-
-                gameState.movablesPositions.forEach((pos, index) => {
-                    if (movables[index]) {
-                        movables[index].position.x = pos.x;
-                        movables[index].position.y = pos.y;
-                    }
-                });
-            }
+      if (gameStateRef.current) {
+        // Restore player position
+        if (gameState.playerPosition && gameStateRef.current.player) {
+          gameStateRef.current.player.position = gameState.playerPosition;
         }
+
+        // Restore all movable elements
+        if (gameState.movablesPositions) {
+          const movables = [
+            gameStateRef.current.background,
+            ...gameStateRef.current.boundaries,
+            gameStateRef.current.foreground,
+            ...gameStateRef.current.teleports,
+            ...gameStateRef.current.interacts
+          ];
+
+          gameState.movablesPositions.forEach((pos, index) => {
+            if (movables[index]) {
+              movables[index].position.x = pos.x;
+              movables[index].position.y = pos.y;
+            }
+          });
+        }
+      }
     };
 
     // Check if we're returning from a game
     if (location.state?.returnedFromGame) {
-        setIsReturningFromGame(true);
-        setShowControls(false); // Don't show controls when returning
+      setIsReturningFromGame(true);
+      setShowControls(false); // Don't show controls when returning
+
+      // Show progress notification if progress was updated
+      if (location.state?.updatedProgress !== undefined) {
+        const currentProgress = parseInt(localStorage.getItem('gameProgress') || '0');
+        setProgressValues({
+          start: Math.max(0, currentProgress - 25),
+          end: currentProgress
+        });
+        setShowProgressNotification(true);
+
+        // Hide notification after 3 seconds
+        setTimeout(() => {
+          setShowProgressNotification(false);
+        }, 5000);
+      }
     }
 
     // Check both localStorage and location state for game state
@@ -511,15 +529,15 @@ function Canvas() {
     const locationState = location.state?.gameState;
 
     if (locationState) {
-        restoreGameState(locationState);
+      restoreGameState(locationState);
     } else if (savedState) {
-        restoreGameState(JSON.parse(savedState));
+      restoreGameState(JSON.parse(savedState));
     }
 
     // Clear saved states
     localStorage.removeItem('lastGameState');
     if (location.state?.returnedFromGame) {
-        navigate(location.pathname, { replace: true, state: {} });
+      navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate]);
 
@@ -536,6 +554,13 @@ function Canvas() {
         <div className="fixed inset-0 z-50 backdrop-blur-md">
           <InitialLoader transparent={true} />
         </div>
+      )}
+      {showProgressNotification && (
+        <ProgressNotification 
+          startValue={progressValues.start+25}
+          endValue={progressValues.end+25}
+          onComplete={() => setShowProgressNotification(false)}
+        />
       )}
       <div className={`transition-opacity duration-500 ${!loading ? 'opacity-100' : 'opacity-0'}`}>
         <canvas ref={canvasRef} />

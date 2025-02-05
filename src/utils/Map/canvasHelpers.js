@@ -162,7 +162,7 @@ export const updateGameLogic = (
     movables,
     deltaTime
 ) => {
-    drawElements(context, [background, player, foreground, ...teleports, ...boundaries]);
+    drawElements(context, [background, player, foreground]);
     const teleportActivated = checkTeleportation(
         context,
         player,

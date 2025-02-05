@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import KeyBind from "../common/KeyBind";
-import { genieImage, npcImage, resourceImage } from "../../assets/images/Map";
+import { genieImage, npcImage, resourceImage, cardGameImage } from "../../assets/images/Map";
 
 const Guide = ({ onClose }) => {
   useEffect(() => {
@@ -31,6 +31,12 @@ const Guide = ({ onClose }) => {
       title: "Knowledge Book",
       description:
         "Engage with the Knowledge Book to acquire the insights needed to advance to the next level.",
+    },
+    {
+      image: cardGameImage.src,
+      title: "Card Quest",
+      description:
+        "Engage with the Card Game to test your knowledge and skills.",
     },
   ];
 
