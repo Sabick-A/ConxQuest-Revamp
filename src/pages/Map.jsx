@@ -508,19 +508,22 @@ function Canvas() {
       setIsReturningFromGame(true);
       setShowControls(false); // Don't show controls when returning
 
-      // Show progress notification if progress was updated
+      // Show progress notification only if progress was actually updated
       if (location.state?.updatedProgress !== undefined) {
         const currentProgress = parseInt(localStorage.getItem('gameProgress') || '0');
-        setProgressValues({
-          start: Math.max(0, currentProgress - 25),
-          end: currentProgress
-        });
-        setShowProgressNotification(true);
+        // Only show notification if progress actually changed
+        if (currentProgress > (currentProgress - 25)) {
+          setProgressValues({
+            start: Math.max(0, currentProgress - 25),
+            end: currentProgress
+          });
+          setShowProgressNotification(true);
 
-        // Hide notification after 3 seconds
-        setTimeout(() => {
-          setShowProgressNotification(false);
-        }, 5000);
+          // Hide notification after 5 seconds
+          setTimeout(() => {
+            setShowProgressNotification(false);
+          }, 5000);
+        }
       }
     }
 

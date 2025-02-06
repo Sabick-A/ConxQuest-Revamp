@@ -5,8 +5,8 @@ import KeyBind from '../common/KeyBind';
 const dialogData = {
   1: {
     positions: {
-      npc: { x: 225, y: -225 },    // NPC dialog appears on the right
-      player: { x: -225, y: -225 }  // Player dialog appears on the left
+      npc: { x: 185, y: -225 },    // NPC dialog appears on the right
+      player: { x: -140, y: -190 }  // Player dialog appears on the left
     },
     dialogs: [
         { speaker: 'npc', text: "Welcome to ConxQuest! I'm here to guide you on an exciting journey through the Constitution." },
@@ -16,15 +16,45 @@ const dialogData = {
   },
   2: {
     positions: {
-      npc: { x: 500, y: 0 },    // NPC dialog appears on the right
-      player: { x: -500, y: 0 }  // Player dialog appears on the left
+      npc: { x: 190, y: -230 },    
+      player: { x: -140, y: -200 }  
     },
     dialogs: [
-      { speaker: 'npc', text: "Hey there! Want to learn about the Bill of Rights?" },
-      { speaker: 'player', text: "Yes, please tell me more!" },
-      { speaker: 'npc', text: "The Bill of Rights consists of the first 10 amendments to the Constitution..." }
+      { speaker: 'npc', text: "Halt! You must complete all games in this level before you can proceed to the next island. The knowledge from these games is essential for your journey." },
+      { speaker: 'player', text: "Oh no! But why can’t I just move ahead?" },
+      { speaker: 'npc', text: "Because each game teaches you something important. Skipping them would mean missing out on crucial knowledge!" },
+      { speaker: 'player', text: "Alright, I get it. I’ll make sure to complete them all before moving forward!" },
+      { speaker: 'npc', text: "That’s the spirit! Master the challenges, and you’ll be ready for what lies ahead." }
     ]
-  }
+  },
+  3: {
+    positions: {
+      npc: { x: -225, y: -200 },    // NPC dialog appears on the right
+      player: { x: 100, y: -200 }  // Player dialog appears on the left
+    },
+    dialogs: [
+      { speaker: 'npc', text: "Did you know? The Preamble is often referred to as the 'Mini-Constitution' because it summarises the essence of the entire document." },
+      { speaker: 'player', text: "Wow, I didn’t know that! So it’s like a sneak peek into what the Constitution stands for?" },
+      { speaker: 'npc', text: "Exactly! It lays out the core values and principles our nation is built upon." },
+      { speaker: 'player', text: "That’s really cool! I should probably read it carefully." },
+      { speaker: 'npc', text: "Absolutely! Understanding it will give you great insights into our nation's foundation." }
+    ]
+  },
+  4: {
+    positions: {
+      npc: { x: 100, y: -280 },    
+      player: { x: -150, y: -190 }  
+    },
+    dialogs: [
+      { speaker: 'npc', text: "Ah, a curious traveler! Welcome to this land of knowledge. Are you ready to uncover the wisdom of the Constitution?" },
+      { speaker: 'player', text: "Absolutely! I want to learn as much as I can." },
+      { speaker: 'npc', text: "Excellent! Let’s start with a question. Do you know what the Constitution is primarily designed to do?" },
+      { speaker: 'player', text: "Hmm… I think it sets the rules for the country, right?" },
+      { speaker: 'npc', text: "Correct! It defines the principles of governance, the rights of citizens, and the duties of the state." },
+      { speaker: 'player', text: "That’s interesting! So it’s like the ultimate guidebook for the nation?" },
+      { speaker: 'npc', text: "Exactly! And every citizen should understand it. Keep exploring, and you’ll uncover even more fascinating details!" }
+    ]
+  },
   // Add more dialog sets for other NPCs
 };
 
@@ -62,7 +92,7 @@ function Dialog({ npcId, onClose }) {
   const currentMessage = dialogs[currentDialog];
   const isPlayer = currentMessage.speaker === 'player';
   const offset = isPlayer ? positions.player : positions.npc;
-
+  const isRight=(isPlayer)?positions.player.x<0:positions.npc.x<0;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] w-screen h-screen flex justify-center items-center">
@@ -73,7 +103,7 @@ function Dialog({ npcId, onClose }) {
           backdrop-blur-md shadow-[0_0_20px_rgba(74,222,128,0.15)]
           pointer-events-auto animate-dialogPopIn
           before:content-[''] before:absolute before:-bottom-[10px] 
-          ${isPlayer 
+          ${isRight 
             ? 'before:left-[80%] bg-gradient-to-br from-whitesmoke/95 to-gray-200/95' 
             : 'before:left-[20%] bg-gradient-to-br from-whitesmoke/95 to-gray-200/95'
           }

@@ -114,35 +114,57 @@ const CardGame = () => {
             // Get the saved game state
             const savedState = localStorage.getItem('lastGameState');
             
-            // Ensure progress is updated before navigation
-            const currentProgress = parseInt(localStorage.getItem('gameProgress') || '0');
-            const newProgress = Math.min(currentProgress + 25, 100);
-            localStorage.setItem('gameProgress', newProgress);
+            // Check if this game has been completed before
+            const completedGames = JSON.parse(localStorage.getItem('completedGames') || '[]');
+            const isGameCompleted = completedGames.includes('cardGame');
             
-            // Dispatch event for progress update
-            window.dispatchEvent(new CustomEvent('gameComplete', {
-                detail: { 
-                    success: true,
-                    gameState: savedState ? JSON.parse(savedState) : null
-                }
-            }));
+            // Only update progress if game hasn't been completed before
+            if (!isGameCompleted) {
+                const currentProgress = parseInt(localStorage.getItem('gameProgress') || '0');
+                const newProgress = Math.min(currentProgress + 25, 100);
+                localStorage.setItem('gameProgress', newProgress);
+                
+                // Mark game as completed
+                completedGames.push('cardGame');
+                localStorage.setItem('completedGames', JSON.stringify(completedGames));
+                
+                // Dispatch event for progress update
+                window.dispatchEvent(new CustomEvent('gameComplete', {
+                    detail: { 
+                        success: true,
+                        gameState: savedState ? JSON.parse(savedState) : null
+                    }
+                }));
 
-            // Navigate after progress update
-            if (savedState) {
-                navigate('/map', {
-                    state: { 
-                        returnedFromGame: true,
-                        gameState: JSON.parse(savedState),
-                        updatedProgress: newProgress
-                    }
-                });
+                // Navigate after progress update
+                if (savedState) {
+                    navigate('/map', {
+                        state: { 
+                            returnedFromGame: true,
+                            gameState: JSON.parse(savedState),
+                            updatedProgress: newProgress
+                        }
+                    });
+                } else {
+                    navigate('/map', {
+                        state: {
+                            returnedFromGame: true,
+                            updatedProgress: newProgress
+                        }
+                    });
+                }
             } else {
-                navigate('/map', {
-                    state: {
-                        returnedFromGame: true,
-                        updatedProgress: newProgress
-                    }
-                });
+                // If game was already completed, just navigate back without progress update
+                if (savedState) {
+                    navigate('/map', {
+                        state: { 
+                            returnedFromGame: true,
+                            gameState: JSON.parse(savedState)
+                        }
+                    });
+                } else {
+                    navigate('/map');
+                }
             }
         }
     };
