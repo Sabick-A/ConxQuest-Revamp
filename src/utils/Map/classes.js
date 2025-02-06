@@ -8,7 +8,6 @@ class Sprite {
         this.moving = false;
         this.loaded = false;
 
-        // Handle image loading
         if (this.image.complete) {
             this.loaded = true;
         } else {
@@ -40,7 +39,7 @@ class Sprite {
         }
 
         if (this.frames.elapsed % this.frames.hold === 0) {
-            this.frames.val = (this.frames.val + 1) % this.frames.max; // Cycles through frames
+            this.frames.val = (this.frames.val + 1) % this.frames.max;
         }
     }
 }

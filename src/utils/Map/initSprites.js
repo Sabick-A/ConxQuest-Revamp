@@ -12,8 +12,8 @@ export const initSprites = (canvas, offset) => {
 
     const player = new Sprite({
         position: {
-            x: canvas.width / 2 - (192 / 4),  // Center horizontally (sprite width / 4 since we have 4 frames)
-            y: canvas.height / 2 - 68 / 2,    // Center vertically
+            x: canvas.width / 2 - (192 / 4),  
+            y: canvas.height / 2 - 68 / 2, 
         },
         image: playerDownImage,
         frames: {
@@ -35,7 +35,7 @@ export const initSprites = (canvas, offset) => {
             x: offset.x,
             y: offset.y,
         },
-        image: foregroundImage, // Assuming foreground image is the same as background
+        image: foregroundImage, 
         width: 4096,
         height: 4096,
     });

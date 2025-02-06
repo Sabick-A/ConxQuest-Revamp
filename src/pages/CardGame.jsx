@@ -1,46 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import heartImage from './images/heart.png';
-import cardWhite from './images/card_white.png';
-import card1 from './images/card_1.jpg';
-import card2 from './images/card_2.jpg';
-import card3 from './images/card_3.jpg';
-import card4 from './images/card_4.jpg';
-import card5 from './images/card_5.jpg';
-import card6 from './images/card_6.jpg';
-import card7 from './images/card_7.jpg';
-import card8 from './images/card_8.jpg';
-import bg1 from './images/bg1.jpeg';
+import {
+    heartImage,
+    cardWhite,
+    card1,
+    card2,
+    card3,
+    card4,
+    card5,
+    card6,
+    card7,
+    card8,
+    bg1
+} from '../assets/images/cardgame';
 
 const cardImages = [card1, card2, card3, card4, card5, card6, card7, card8];
 
 const QUESTIONS = [
-    [
-        "While DPSPs are not enforceable by courts, the government is constitutionally obligated to prioritize them over Fundamental Rights when forming policies.",
-        0,
-    ],
+    ["While DPSPs are not enforceable by courts, the government is constitutionally obligated to prioritize them over Fundamental Rights when forming policies.", 0],
     ["Children under the age of 14 are allowed to work for jobs.", 0],
-    [
-        "Children should not be forced to work in jobs that are not suitable for their age and strength.",
-        1,
-    ],
-    [
-        "Every child has the right to early childhood care and education until they turn six.",
-        1,
-    ],
-    [
-        "Children in India have the right to be protected from discrimination based on their religion or caste.",
-        1,
-    ],
+    ["Children should not be forced to work in jobs that are not suitable for their age and strength.", 1],
+    ["Every child has the right to early childhood care and education until they turn six.", 1],
+    ["Children in India have the right to be protected from discrimination based on their religion or caste.", 1],
     ["Children can be forced into labor in India.", 0],
-    [
-        "Children have the right to be protected from social injustice and exploitation.",
-        1,
-    ],
-    [
-        "The government has a duty to improve public health and nutrition for children.",
-        1,
-    ],
+    ["Children have the right to be protected from social injustice and exploitation.", 1],
+    ["The government has a duty to improve public health and nutrition for children.", 1],
+    ["Citizens have the right to freely move and live anywhere within India's territory.", 1],
+    ["The Constitution allows discrimination based on religion when applying for jobs.", 0],
+    ["Parents have a fundamental duty to ensure education for children aged 6-14 years.", 1],
+    ["Citizens can be punished multiple times for the same crime in India.", 0],
+    ["The right to property is still considered a fundamental right in India.", 0],
+    ["Citizens have the right to access information about government activities.", 1],
+    ["Only certain religions are given special treatment under India's secular system.", 0],
+    ["Citizens can be forced to testify against themselves in criminal cases.", 0],
+    ["All citizens have a duty to protect and preserve the natural environment.", 1],
+    ["The Constitution guarantees special privileges to certain social groups.", 0],
+    ["Citizens have the right to practice and preserve their cultural traditions.", 1],
+    ["People can be forced to work without payment in India.", 0],
+    ["Citizens have a duty to stand during the National Anthem.", 1],
+    ["The right to privacy requires consent before personal information disclosure.", 1],
+    ["Only educated citizens have the right to vote in India.", 0],
+    ["Citizens have a duty to promote harmony across religious and linguistic groups.", 1],
+    ["The Constitution allows forced religious conversion.", 0],
+    ["Every citizen has the duty to fight corruption and avoid bribery.", 1],
+    ["Women and men have different fundamental rights under the Constitution.", 0],
+    ["Citizens can choose any profession or business they want to pursue.", 1]
 ];
 
 const CardGame = () => {

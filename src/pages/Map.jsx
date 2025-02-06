@@ -503,10 +503,29 @@ function Canvas() {
       }
     };
 
+    let timers = [];
+
     // Check if we're returning from a game
     if (location.state?.returnedFromGame) {
       setIsReturningFromGame(true);
       setShowControls(false); // Don't show controls when returning
+      setLoading(true); // Show loading screen when returning
+      setFadeOut(false);
+
+      // After a short delay, start fade out and hide loader
+      const fadeTimer = setTimeout(() => {
+        setFadeOut(true);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
+      }, 1000);
+      timers.push(fadeTimer);
+
+      // Reset isReturningFromGame after the loading is complete
+      const controlsTimer = setTimeout(() => {
+        setIsReturningFromGame(false);
+      }, 2000);
+      timers.push(controlsTimer);
 
       // Show progress notification only if progress was actually updated
       if (location.state?.updatedProgress !== undefined) {
@@ -517,32 +536,38 @@ function Canvas() {
             start: Math.max(0, currentProgress - 25),
             end: currentProgress
           });
-          setShowProgressNotification(true);
-
-          // Hide notification after 5 seconds
-          setTimeout(() => {
-            setShowProgressNotification(false);
-          }, 5000);
+          
+          // Show progress notification after loading screen
+          const notificationTimer = setTimeout(() => {
+            setShowProgressNotification(true);
+            // Hide notification after 5 seconds
+            setTimeout(() => {
+              setShowProgressNotification(false);
+            }, 5000);
+          }, 2000);
+          timers.push(notificationTimer);
         }
       }
+
+      // Check both localStorage and location state for game state
+      const savedState = localStorage.getItem('lastGameState');
+      const locationState = location.state?.gameState;
+
+      if (locationState) {
+        restoreGameState(locationState);
+      } else if (savedState) {
+        restoreGameState(JSON.parse(savedState));
+      }
+
+      // Clear saved states
+      localStorage.removeItem('lastGameState');
     }
 
-    // Check both localStorage and location state for game state
-    const savedState = localStorage.getItem('lastGameState');
-    const locationState = location.state?.gameState;
-
-    if (locationState) {
-      restoreGameState(locationState);
-    } else if (savedState) {
-      restoreGameState(JSON.parse(savedState));
-    }
-
-    // Clear saved states
-    localStorage.removeItem('lastGameState');
-    if (location.state?.returnedFromGame) {
-      navigate(location.pathname, { replace: true, state: {} });
-    }
-  }, [location, navigate]);
+    // Cleanup function that clears all timers
+    return () => {
+      timers.forEach(timer => clearTimeout(timer));
+    };
+  }, [location.state]);
 
   const memoizedXBtn = useMemo(() => <XBtn position={playerPosition} />, [playerPosition]);
   const memoizedControls = useMemo(
@@ -594,3 +619,4 @@ function Canvas() {
 }
 
 export default Canvas;
+

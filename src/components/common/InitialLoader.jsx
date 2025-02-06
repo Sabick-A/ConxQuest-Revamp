@@ -56,7 +56,7 @@ function InitialLoader({ transparent = false }) {
           {/* Text glow effect */}
           <div className={`absolute -inset-1 ${transparent ? 'bg-white/5' : 'bg-green-400/5'} blur-sm rounded-lg ${transparent ? 'group-hover:bg-white/10' : 'group-hover:bg-green-400/10'} transition-colors duration-300`} />
           <div className="relative">
-            {(transparent ? ["R", "e", "t", "u", "r", "n", "i", "n", "g", " ", "H", "o", "m", "e", ".", ".", "."] : 
+            {(transparent ? ["R", "e", "t", "u", "r", "n", "i", "n", "g", "\u00A0", "H", "o", "m", "e", ".", ".", "."] : 
               ["L", "o", "a", "d", "i", "n", "g", ".", ".", "."]).map((char, i) => (
               <span 
                 key={i}

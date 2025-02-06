@@ -8,9 +8,8 @@ import {
 } from "../../assets/images/Map";
 
 // Base speed in pixels per second
-const BASE_SPEED = 300; // Adjusted from 3 to 180 pixels per second
+const BASE_SPEED = 300; 
 
-// Directions configuration
 const directions = {
     w: {
         axis: "y",
@@ -51,8 +50,6 @@ const checkTeleportation = (context, player, teleports, keys, movables) => {
         ) {
             console.log("teleportation activated");
             teleportActivated = true;
-            
-            // Save complete game state
             const gameState = {
                 playerPosition: {
                     x: player.position.x,
@@ -75,7 +72,7 @@ const checkTeleportation = (context, player, teleports, keys, movables) => {
     return teleportActivated;
 };
 
-const checkInteraction = (context, player, interacts, keys) => {
+const checkInteraction = (player, interacts, keys) => {
     let interactionActivated = false;
     interacts.forEach((inter) => {
         if (
@@ -162,7 +159,7 @@ export const updateGameLogic = (
     movables,
     deltaTime
 ) => {
-    drawElements(context, [background, player, foreground,...boundaries]);
+    drawElements(context, [background, player, foreground]);
     const teleportActivated = checkTeleportation(
         context,
         player,
@@ -172,7 +169,6 @@ export const updateGameLogic = (
     );
     
     checkInteraction(
-        context,
         player,
         interacts,
         keys

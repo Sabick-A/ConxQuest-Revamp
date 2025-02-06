@@ -82,7 +82,7 @@ const Star = styled(motion.div)`
 const Title = styled.h1`
     transform: translateY(20px);
     opacity: 0;
-    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 3.5rem;
     margin-bottom: 2rem;
     position: relative;
@@ -127,8 +127,8 @@ const Title = styled.h1`
 const AnimatedContent = styled.div`
     opacity: 0;
     transform: translateY(20px);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    transition-delay: 200ms;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 100ms;
 
     .animate-in & {
         opacity: 1;

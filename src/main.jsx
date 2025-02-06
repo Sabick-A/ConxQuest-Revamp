@@ -8,7 +8,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 const Home = lazy(() => import('./pages/Home'));
 const Map = lazy(() => import('./pages/Map'));
 const Page404 = lazy(() => import('./pages/Page404'));
-const CardGame = lazy(() => import('./pages/Games/cardgame/CardGame'));
+const CardGame = lazy(() => import('./pages/CardGame.jsx'));
 
 const router = createBrowserRouter([
     {
