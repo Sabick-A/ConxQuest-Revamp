@@ -7,12 +7,12 @@ const MapView = ({ onClose }) => {
     const [isLoading, setIsLoading] = useState(true);
     const mapContainerRef = useRef(null);
 
-    // Preload image
+
     useEffect(() => {
         const img = new Image();
         img.src = backgroundImage.src;
         
-        // If the image is already cached, it might be loaded immediately
+    
         if (img.complete) {
             setIsLoading(false);
         } else {

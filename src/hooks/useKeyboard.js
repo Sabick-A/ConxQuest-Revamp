@@ -23,10 +23,10 @@ export const useKeyboard = () => {
         }
         if (onNavigate) {
             onNavigate(() => {
-                // Wait for the InitialLoader animation to play
+            
                 setTimeout(() => {
                     navigate("/");
-                }, 800); // Slightly longer delay for InitialLoader animation
+                }, 800); 
             });
         } else {
             navigate("/");

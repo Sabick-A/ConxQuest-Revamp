@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import KeyBind from '../common/KeyBind';
 
-// Dialog data for each NPC
 const dialogData = {
   1: {
     positions: {
-      npc: { x: 185, y: -225 },    // NPC dialog appears on the right
-      player: { x: -140, y: -190 }  // Player dialog appears on the left
+      npc: { x: 185, y: -225 },  
+      player: { x: -140, y: -190 }  
     },
     dialogs: [
         { speaker: 'npc', text: "Welcome to ConxQuest! I'm here to guide you on an exciting journey through the Constitution." },
@@ -29,8 +28,8 @@ const dialogData = {
   },
   3: {
     positions: {
-      npc: { x: -225, y: -200 },    // NPC dialog appears on the right
-      player: { x: 100, y: -200 }  // Player dialog appears on the left
+      npc: { x: -225, y: -200 },  
+      player: { x: 100, y: -200 } 
     },
     dialogs: [
       { speaker: 'npc', text: "Did you know? The Preamble is often referred to as the 'Mini-Constitution' because it summarises the essence of the entire document." },
@@ -55,7 +54,7 @@ const dialogData = {
       { speaker: 'npc', text: "Exactly! And every citizen should understand it. Keep exploring, and you’ll uncover even more fascinating details!" }
     ]
   },
-  // Add more dialog sets for other NPCs
+
 };
 
 function Dialog({ npcId, onClose }) {
@@ -71,7 +70,7 @@ function Dialog({ npcId, onClose }) {
 
   useEffect(() => {
     const handleKeyPress = (e) => {
-      // Progress dialog on any key press
+  
       if (currentDialog < dialogs.length - 1) {
         setCurrentDialog(prev => prev + 1);
       } else {

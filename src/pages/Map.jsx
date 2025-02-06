@@ -42,7 +42,6 @@ function Canvas() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const gameStateRef = useRef(null);
-  const [savedPlayerPosition, setSavedPlayerPosition] = useState(null);
 
   const { keys, lastKey, handleKeyDown, handleKeyUp, animationIdRef } =
     useKeyboard();

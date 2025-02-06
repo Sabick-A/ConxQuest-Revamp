@@ -1,4 +1,3 @@
-// canvasHelpers.js
 import { checkCollision } from "./"; 
 import {
     playerDownImage,
@@ -7,7 +6,7 @@ import {
     playerRightImage,
 } from "../../assets/images/Map";
 
-// Base speed in pixels per second
+
 const BASE_SPEED = 300; 
 
 const directions = {
@@ -41,7 +40,7 @@ export const drawElements = (context, elements) => {
     elements.forEach((element) => element.draw(context));
 };
 
-const checkTeleportation = (context, player, teleports, keys, movables) => {
+const checkTeleportation = ( player, teleports, keys, movables) => {
     let teleportActivated = false;
     teleports.forEach((pad) => {
         if (
@@ -88,8 +87,7 @@ const checkInteraction = (player, interacts, keys) => {
                 const botpress = window.botpress;
                 botpress.open();
             } else if (inter.val >= 5 && inter.val <= 20) {
-                // NPC dialog interactions (IDs 5-20 reserved for NPCs)
-                const npcId = inter.val - 4; // Convert 5 to 1, 6 to 2, etc.
+                const npcId = inter.val - 4; 
                 console.log('Triggering dialog for NPC:', npcId);
                 window.dispatchEvent(new CustomEvent('openDialog', { 
                     detail: { npcId } 
@@ -112,7 +110,7 @@ const updatePlayerMovement = (
     boundaries,
     player,
     movables,
-    deltaTime = 1/60 // Default to 60 FPS if not provided
+    deltaTime = 1/60 
 ) => {
     player.moving = false;
     if (!lastKey || !directions[lastKey]) return;
@@ -121,8 +119,7 @@ const updatePlayerMovement = (
         player.moving = true;
         const direction = directions[lastKey];
         player.image = direction.image;
-        
-        // Calculate frame-rate independent speed
+    
         const currentSpeed = BASE_SPEED * deltaTime;
         
         const moving = !boundaries.some((boundary) =>
@@ -161,7 +158,6 @@ export const updateGameLogic = (
 ) => {
     drawElements(context, [background, player, foreground]);
     const teleportActivated = checkTeleportation(
-        context,
         player,
         teleports,
         keys,

@@ -87,24 +87,22 @@ function ProgressBar() {
     });
 
     useEffect(() => {
-        // Update progress when localStorage changes
+  
         const handleStorageChange = () => {
             const newProgress = parseInt(localStorage.getItem('gameProgress') || '0');
             setProgress(newProgress);
         };
 
-        // Listen for the gameComplete event
         const handleGameComplete = () => {
             const newProgress = parseInt(localStorage.getItem('gameProgress') || '0');
             setProgress(newProgress);
         };
 
-        // Add event listeners
         window.addEventListener('storage', handleStorageChange);
         window.addEventListener('gameComplete', handleGameComplete);
 
         return () => {
-            // Clean up event listeners
+     
             window.removeEventListener('storage', handleStorageChange);
             window.removeEventListener('gameComplete', handleGameComplete);
         };

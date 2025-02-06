@@ -16,29 +16,32 @@ class ErrorBoundary extends React.Component {
       error: error,
       errorInfo: errorInfo
     });
-    // You can also log the error to an error reporting service here
     console.error('Error caught by boundary:', error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
-          <div className="text-center p-8 bg-white rounded-lg shadow-xl">
-            <h1 className="text-2xl font-bold text-red-600 mb-4">Oops! Something went wrong</h1>
-            <p className="text-gray-600 mb-4">We're sorry for the inconvenience. Please try refreshing the page.</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors mr-4"
-            >
-              Refresh Page
-            </button>
-            <button
-              onClick={() => window.location.href = '/'}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-            >
-              Go Home
-            </button>
+        <div className="min-h-screen w-full flex items-center justify-center bg-blackw bg-opacity-80 backdrop-blur-sm">
+          <div className="text-center p-8 bg-whitesmoke rounded-2xl border-2 border-green-700 shadow-[0_0_15px_rgba(34,197,94,0.3)] max-w-[95vw]">
+            <h1 className="text-2xl font-game tracking-wider text-green-700 mb-6 pb-2 border-b-2 border-green-700 border-opacity-30">
+              SYSTEM ERROR ENCOUNTERED
+            </h1>
+            <p className="text-gray-600 mb-6">We apologize for the interruption in your quest. Please choose your next action:</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => window.location.reload()}
+                className="bg-green-700 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-game tracking-wide border-2 border-green-700 border-opacity-30 hover:border-opacity-50"
+              >
+                Reload Current Quest
+              </button>
+              <button
+                onClick={() => window.location.href = '/'}
+                className="bg-[#2a7299] bg-opacity-10 text-green-700 px-6 py-3 rounded-lg hover:bg-opacity-20 transition-colors font-game tracking-wide border-2 border-green-700 border-opacity-30 hover:border-opacity-50"
+              >
+                Return to Home
+              </button>
+            </div>
           </div>
         </div>
       );

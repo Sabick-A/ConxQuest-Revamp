@@ -12,14 +12,11 @@ import SplashCursor from '../components/common/SplashCursor'
 function Home() {
   const [isLeaving, setIsLeaving] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
-    // Set dark green background when mounting Home
     document.body.style.backgroundColor = "rgb(5, 46, 22)";
     
     return () => {
-      // Only change to blue if we're navigating to map
       if (isLeaving) {
         document.body.style.backgroundColor = "#2A7299";
       }
@@ -30,7 +27,7 @@ function Home() {
     setIsLeaving(true);
     setTimeout(() => {
       navigate('/map');
-    }, 500); // Match this with CSS transition duration
+    }, 500);
   };
 
   return (
